@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>数据结构课设-基于C++的RSA工具</title>
+      <link href="/2023/12/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AF%BE%E8%AE%BE/"/>
+      <url>/2023/12/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AF%BE%E8%AE%BE/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本课设是笔者在学校的课程设计上自己构思的，基于c++实现，利用QT可视化。</p><p>本项目已经同步github<br><a href="https://github.com/cyan4run/RSA">https://github.com/cyan4run/RSA</a></p><p>经验不足，有一些算法还没有优化和改进会导致程序卡顿，可能在性能好的机子上会有些优化。</p><p>本项目的一些模块借鉴了其他大佬，如大数运算模块和miller-rabin算法，但是算力可能还是不够。</p><h1 id="模块说明"><a href="#模块说明" class="headerlink" title="模块说明"></a>模块说明</h1><h2 id="大整数运算模块"><a href="#大整数运算模块" class="headerlink" title="大整数运算模块"></a>大整数运算模块</h2><p>这个模块借鉴了github上部分项目<br>用字符串存取一个大整数，大整数的所有运算在BigInteger.cpp中完成。其中关键的运算是modpow和modInverse函数。这两个函数用于计算RSA。其中对运算符做了重载</p><h2 id="随机素数模块"><a href="#随机素数模块" class="headerlink" title="随机素数模块"></a>随机素数模块</h2><p>随机一个指定位数的模块，但是这个模块即使只做了一次素性检测，在大位时仍然很慢，采用随机素数文件封装在exe中，保证加密效率，但安全性下降。当然，QT工程里primes文件夹里就是我已经预先存储的素数，可以通过python的Crypto库生成随机素数，速度很快。<br>这个算法部分借鉴了某项目。</p><h2 id="RSA模块"><a href="#RSA模块" class="headerlink" title="RSA模块"></a>RSA模块</h2><p>整合了加密，解密模块在一个RSA类中，参见Rsa.cpp，Init函数将会随机生成素数并计算所有相关的RSA的值</p><p>作者一开始写的时候没有想到用户自己填写公钥加密的模块，有兴趣的可以加加。</p><h1 id="部署方案"><a href="#部署方案" class="headerlink" title="部署方案"></a>部署方案</h1><p>本项目即QT工程，直接在QT中打开选择编译架构即可运行。</p><p>封装好的exe文件也一并给出，这个exe是使用Enigma virtual box封装的。</p><h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>getPrime.cpp有待优化，但目前够用。<br>各位大佬可以看看优化一下素数算法</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 数据结构 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>【数据结构】排序</title>
       <link href="/2023/11/23/23-11-23-4/"/>
       <url>/2023/11/23/23-11-23-4/</url>
