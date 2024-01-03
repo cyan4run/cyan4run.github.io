@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>加密编码(持续更新)</title>
+      <link href="/2024/01/03/20240103/"/>
+      <url>/2024/01/03/20240103/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文章收录作者遇到的所有编码或密码。</p><h2 id="如何识别编码？"><a href="#如何识别编码？" class="headerlink" title="如何识别编码？"></a>如何识别编码？</h2><p>识别算法编码类型：</p><p>1.看位数</p><p>2.看特征（数字，字母，大小写，符合）</p><p>3.看当前密文所在地（web，数据库，操作系统）</p><h2 id="MD5"><a href="#MD5" class="headerlink" title="MD5"></a>MD5</h2><p>解码网站：<a href="https://www.cmd5.com">https://www.cmd5.com</a></p><p>32位或16位由“0-9” “a-f”组成的字符串</p><p><strong>md5不可逆</strong></p><p><strong>破解方法</strong>：碰撞、枚举</p><p><strong>salt</strong></p><p>Discuz加盐</p><p>SHA1：与md5差不多，40位</p><h2 id="Base系列"><a href="#Base系列" class="headerlink" title="Base系列"></a>Base系列</h2><p>各类组合传输参数值</p><p>Base64、Base58、Base32、Base16、Base85、Base100等</p><p>提一嘴base100有emoji组成</p><p>可以使用<a href="https://cyberchef.org/解密大多数">https://cyberchef.org/解密大多数</a></p><p>没遇到的看这里www.atoolbox.net</p><h2 id="JS前端加密"><a href="#JS前端加密" class="headerlink" title="JS前端加密"></a>JS前端加密</h2><h3 id="JS颜文字"><a href="#JS颜文字" class="headerlink" title="JS颜文字"></a>JS颜文字</h3><p>一堆颜文字 按f12解密</p><p>解密网站：<a href="https://utf-8.jp/public/aaencode.html">https://utf-8.jp/public/aaencode.html</a></p><h3 id="jother"><a href="#jother" class="headerlink" title="jother"></a>jother</h3><p>只用 ! + ( ) [ ] { }八个字符编码 f12解密</p><p>解密网站：<a href="http://tmxk.org/jother/">http://tmxk.org/jother/</a></p><h3 id="JSFUCK"><a href="#JSFUCK" class="headerlink" title="JSFUCK"></a>JSFUCK</h3><p>只用 ! + ( ) [ ]编码</p><p>解密网站：<a href="http://www.jsfuck.com/">http://www.jsfuck.com/</a></p><h2 id="后端加密"><a href="#后端加密" class="headerlink" title="后端加密"></a>后端加密</h2><h4 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a>PHP</h4><p>乱码、头部信息</p><p><a href="http://dezend.qiling.org/free.html">http://dezend.qiling.org/free.html</a></p><h4 id="NET"><a href="#NET" class="headerlink" title=".NET"></a>.NET</h4><p>DLL封装代码文件</p><p>用ILSpy</p><p>这个工具下载作者提供链接：<a href="http://114.55.111.231/downloads/ILSpy.zip">http://114.55.111.231/downloads/ILSpy.zip</a></p><h4 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h4><p>java&amp;class文件</p><h2 id="数据显示编码"><a href="#数据显示编码" class="headerlink" title="数据显示编码"></a>数据显示编码</h2><p>字符串数据显示编码</p><p>UTF-8/GBK</p><p>这个作者在base64转换时遇到的多，base64转换时候可能出现乱码，试试另一种文字比那吗就可以了</p><h2 id="杂项编码-密码"><a href="#杂项编码-密码" class="headerlink" title="杂项编码/密码"></a>杂项编码/密码</h2><p>本项有待不断补充</p><p>先记录作者做题遇到的吧，经典密码可以放放，比较容易的</p><h3 id="SNOW隐写解密"><a href="#SNOW隐写解密" class="headerlink" title="SNOW隐写解密"></a>SNOW隐写解密</h3><p>这个密码的特征就是一个文件里面有多余的不正常的换行符</p><p>提供下载链接：<a href="http://114.55.111.231/downloads/snow.exe">http://114.55.111.231/downloads/snow.exe</a></p><p>本工具为命令行工具，建立一个文件夹放入snow.exe工具，将要操作的文件放入文件夹中，在这个文件夹中打开终端进行操作。</p><p>操作方法：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//加密</span><br><span class="line">snow -C -m &quot;明文&quot; -p &quot;密码&quot; infile outfile</span><br><span class="line">//解密</span><br><span class="line">snow -C -p 密码&quot; file</span><br></pre></td></tr></table></figure><h2 id="工具下载"><a href="#工具下载" class="headerlink" title="工具下载"></a>工具下载</h2><p>以下工具是作者从网上收集的加解密的一些工具</p><p>超级加解密工具：<a href="http://114.55.111.231/downloads/supersoft.zip">http://114.55.111.231/downloads/supersoft.zip</a></p><p>CTF crack tools：<a href="http://114.55.111.231/downloads/cracktools.zip">http://114.55.111.231/downloads/cracktools.zip</a></p><p>字频统计：<a href="http://114.55.111.231/downloads/frequency.exe">http://114.55.111.231/downloads/frequency.exe</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 渗透学习 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>数据结构课设-基于C++的RSA工具</title>
       <link href="/2023/12/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AF%BE%E8%AE%BE/"/>
       <url>/2023/12/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AF%BE%E8%AE%BE/</url>
