@@ -4,6 +4,63 @@
   
     
     <entry>
+      <title>HackRF One伪造GPS信号</title>
+      <link href="/2024/01/06/hackrfgps/"/>
+      <url>/2024/01/06/hackrfgps/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>hackrf是可以发送无线电的，加上了时钟模块的板子可以模拟出GPS定位。</p><p>可怜的作者手头没有可用的安卓机子，因此只能发不能测试，只好根据网上的教程来实验一波</p><p>本实验环境基于虚拟机 Kali Linux 2022.2 ARM，hackrf板子需要安装时钟信号模块和发送天线</p><h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><h3 id="GPS-SDR-SIM安装"><a href="#GPS-SDR-SIM安装" class="headerlink" title="GPS-SDR-SIM安装"></a>GPS-SDR-SIM安装</h3><p>在合适的地方创建一个目录</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> GPS_CHEAT</span><br></pre></td></tr></table></figure><p>下载gps-sdr-sim源码</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/osqzss/gps-sdr-sim.git</span><br></pre></td></tr></table></figure><p>安装</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> gps-sdr-sim </span><br><span class="line">sudo gcc gpssim.c lm )3 -o gps-sdr-sim -DUSER_MOTION_SIZE=4000</span><br><span class="line"><span class="built_in">chmod</span> -R 777 gps-sdr-sim</span><br></pre></td></tr></table></figure><h3 id="定位GPS卫星"><a href="#定位GPS卫星" class="headerlink" title="定位GPS卫星"></a>定位GPS卫星</h3><p>前往这个网址</p><p><a href="http://www.igs.gnsswhu.cn/index.php/home/data_product/igs.html">http://www.igs.gnsswhu.cn/index.php/home/data_product/igs.html</a></p><p>下载广播星历</p><p>下载得到类似<code>brdc0050.24n</code>这种文件</p><p>放入之前的文件夹中</p><h3 id="查询经纬度信息"><a href="#查询经纬度信息" class="headerlink" title="查询经纬度信息"></a>查询经纬度信息</h3><p>上各种网站查</p><p>我这边得到一组坐标</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">122.1469258210449,37.44940186081953</span><br></pre></td></tr></table></figure><h3 id="生成欺骗文件"><a href="#生成欺骗文件" class="headerlink" title="生成欺骗文件"></a>生成欺骗文件</h3><p>产生一个gpssim.bin二进制文件</p><p>这个文件里存储的就是我输入的坐标信息</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./gps-sdr-sim -e brdc0050.24n -l 122.1469258210449,37.44940186081953 -b 8 -o gpssim.bin</span><br></pre></td></tr></table></figure><p><img src="/2024/01/06/hackrfgps/gpssimbin.png" alt="gpssimbin"></p><h2 id="发送信息"><a href="#发送信息" class="headerlink" title="发送信息"></a>发送信息</h2><p>准备了那么久终于可以发信号了</p><p>用hackrf_tansfer工具</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hackrf_transfer -t gpssim.bin -f 1575420000 -s 2600000 -a 1 -x 20 -R</span><br></pre></td></tr></table></figure><p>-t 文件名bin文件</p><p>-f 为发送频率 (不修改)</p><p>-s 采样速率 （不修改）</p><p>-a 放大器使能 1/0</p><p>-x 增益分贝 0-47分贝，1dB步长</p><p>-R 重复发送</p><p><img src="/2024/01/06/hackrfgps/gpssend.png" alt="gpssend"></p><p>成功发送了，应该是可以被手机接收到的，不过需要断网操作，目前的手机联网后可以自动获取定位信息。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> HACKRF </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>HackRF One 收听FM电台</title>
+      <link href="/2024/01/06/hackrfgqrx/"/>
+      <url>/2024/01/06/hackrfgqrx/</url>
+      
+        <content type="html"><![CDATA[<p>刚安装完hackrf环境，可以用这个小实验测试一波硬件是否正常工作。</p><p>这个实验用安装的gqrx操作</p><p>进入gqrx</p><p>第一步</p><p>调节Receiver Options里的选项</p><p>将Mode 调节为WFM mono</p><p>然后调节(向上)Squelch，直到右下角的视图里有波形，此时如果适当调节Gain值，则可以听到滋滋电流声</p><p><img src="/2024/01/06/hackrfgqrx/gqrx_receiver.png" alt="gqrx_receiver"></p><p>第二步</p><p>调频到你所在地区的一个FM频段</p><p>此时调节BB的值，你应该已经可以清楚的听到人声了</p><p>适当调节BF和IF的值，可以使得声音更清晰</p><p>Gain值可以增大声音，但过大会有强烈电流音</p><p><img src="/2024/01/06/hackrfgqrx/hackrf_input.png" alt="hackrf_input"></p><p>没有什么问题的话，这块板子的接收功能还是不错的，在我所在的地区，广播电台的声音相当清楚。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> HACKRF </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>HackRF One 环境安装指南</title>
+      <link href="/2024/01/06/hackrfinstall/"/>
+      <url>/2024/01/06/hackrfinstall/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>作者在放假前突发奇想想玩软件无线电，于是乎在某鱼花了点钱购入了一块hackrf板子。算是卖家里面最便宜的一档了，时钟信号模块一并组装好了。</p><h2 id="硬件部分"><a href="#硬件部分" class="headerlink" title="硬件部分"></a>硬件部分</h2><p>这块板子买来，卖家也不知道是什么年产的了，不过外观状况良好。</p><p>以下是各个部件：</p><p>hackrf主体部分带时钟模块</p><p>接收天线</p><p>时钟信号天线</p><p>usb数据线</p><p>注意到hackrf板子是micro-usb连接的，既是供电口，又是数据连接口。</p><p>无需赘述，不懂硬件</p><h2 id="安装软件环境"><a href="#安装软件环境" class="headerlink" title="安装软件环境"></a>安装软件环境</h2><p>作者本来想在ubuntu里安装这些环境，没想到有一点意外无法解决。</p><p>后来还是回到了我熟悉的环境虚拟机Kali Linux 2022.2 ARM中</p><p>kali安装环境很无脑，适合我这样的新手hhh。</p><h3 id="hackrf工具下载"><a href="#hackrf工具下载" class="headerlink" title="hackrf工具下载"></a>hackrf工具下载</h3><p>由于linux自带了hackrf驱动，因此不必下载驱动，直接安装工具即可</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install hackrf</span><br></pre></td></tr></table></figure><p>安装完成后测试一下虚拟机是否能够正常连接hackrf固件吧</p><p>1.将hackrf板子连接至电脑，指定连接到虚拟机</p><p>2.终端中输入</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hackrf_info</span><br></pre></td></tr></table></figure><p>若出现如下则安装成功，你的板子可以成功连接到电脑了</p><p>插一嘴这个板子是2017年的，6年的板子了，难怪便宜hhh，不过还是好用的（）</p><p><img src="/2024/01/06/hackrfinstall/hackrf_info.png" alt="hackrf_info"></p><h3 id="gqrx下载"><a href="#gqrx下载" class="headerlink" title="gqrx下载"></a>gqrx下载</h3><p>apt-get方便快捷</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install gqrx-sdr</span><br></pre></td></tr></table></figure><p>在我的机器上，这个软件从终端打开，会提示Connection refused</p><p>直接从开始菜单栏找到gqrx的应用打开即可</p><p>第一次打开，在第一个设备栏里选中hackrf one即可</p><h3 id="GNUradio下载"><a href="#GNUradio下载" class="headerlink" title="GNUradio下载"></a>GNUradio下载</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install gnuradio</span><br></pre></td></tr></table></figure><p>用以下命令运行gnuradio</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gnuradio-companion</span><br></pre></td></tr></table></figure><p>若无法打开，检查命令行报错，一般是报一堆java的错</p><p>检查java版本，更新</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -version</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install default-jdk</span><br></pre></td></tr></table></figure><p>重新打开gnuradio即可</p><h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>到这里hackrf的基本环境就算安装完了，后面我预计会研究一下hackrf的小项目，做一些实验，也会同步更新我的博客，欢迎关注</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> HACKRF </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>加密编码(持续更新)</title>
       <link href="/2024/01/03/20240103/"/>
       <url>/2024/01/03/20240103/</url>
