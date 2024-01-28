@@ -176,7 +176,7 @@
 <p>强连通分量：有向图中的极大强连通子图</p>
 <p>网络(边带权图)：某些图的边具有与它相关的数，称为权，这种带权图叫网络</p>
 <p>生成树：连通图的一个子图如果是一棵包含G所有顶点的树，则称为图G的生成树</p>
-<p><img src="/posts/13164.htm/图分类.png" alt="图分类"></p>
+<p><img src="/2023/11/21/图分类.png" alt="图分类"></p>
 <h4 id="图的抽象数据类型定义"><a href="#图的抽象数据类型定义" class="headerlink" title="图的抽象数据类型定义"></a>图的抽象数据类型定义</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ADT Graph&#123;</span><br><span class="line">	数据对象V:V是具有相同特性的元素的集合称为顶点集。</span><br><span class="line">	数据关系: R=&#123;VR&#125;</span><br><span class="line">					 VR=&#123;&lt;v,w&gt;|v,w属于V且P(v,w),&lt;v,w&gt;表示从v到w的弧&#125;</span><br><span class="line">	基本操作:</span><br><span class="line">  				CreateGraph(&amp;G)	<span class="comment">//建立图</span></span><br><span class="line">  				DestoryGraph(&amp;G)	<span class="comment">//销毁图</span></span><br><span class="line">  				InsertVex(&amp;G,v)	<span class="comment">//插入顶点</span></span><br><span class="line">  				DeleteVex(&amp;G,v)	<span class="comment">//删除顶点</span></span><br><span class="line">  				DFSTraverse(G,v,visit())	<span class="comment">//深度优先搜索</span></span><br><span class="line">  				BFSTraverse(G,v,visit())  <span class="comment">//广度优先搜索</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="图的存储结构"><a href="#图的存储结构" class="headerlink" title="图的存储结构"></a>图的存储结构</h3><h4 id="数组表示法-邻接矩阵"><a href="#数组表示法-邻接矩阵" class="headerlink" title="数组表示法(邻接矩阵)"></a>数组表示法(邻接矩阵)</h4><p>G的邻接矩阵满足以下条件：</p>
 <script type="math/tex; mode=display">
@@ -272,7 +272,7 @@ Wij ,若(v_i,v_j)\in E或<v_i,v_j>\in E\\
 <h4 id="单源最短路径Dijkstra"><a href="#单源最短路径Dijkstra" class="headerlink" title="单源最短路径Dijkstra"></a>单源最短路径Dijkstra</h4><p>给定有向图G和源点$v_i$，求$v_i$到G中其余各顶点的最短路径</p>
 <h5 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h5><p>按路径长度的递增次序，逐步产生最短路径Dijkstra算法(SPF算法)</p>
 <p>首先求出长度最短的一条路径，再参照它求出长度次短的一条最短路径，以此类推，直到从顶点v到其他各顶点的最短路径全部求出为止</p>
-<h5 id="算法要点"><a href="#算法要点" class="headerlink" title="算法要点"></a>算法要点</h5><p>例图：<img src="/posts/13164.htm/单源最小路径示例.png" alt="单源最小路径"><br>1.设源点$v_0$，顶点集合分成两部分：</p>
+<h5 id="算法要点"><a href="#算法要点" class="headerlink" title="算法要点"></a>算法要点</h5><p>例图：<img src="/2023/11/21/单源最小路径示例.png" alt="单源最小路径"><br>1.设源点$v_0$，顶点集合分成两部分：</p>
 <p>U：已经求出最短路径的顶点集合</p>
 <p>V-U：未求出最短路径的顶点集合</p>
 <p>初值：U={$v_0$},V-U={$v_1$,$v_2$,$v_3$,$v_4$}</p>

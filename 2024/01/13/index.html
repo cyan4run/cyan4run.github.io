@@ -180,17 +180,17 @@
 <h3 id="如何烧录"><a href="#如何烧录" class="headerlink" title="如何烧录"></a>如何烧录</h3><p><strong>先将代码里的your_server_ip换成自己的ip</strong>，注意自己配置的下载路径</p>
 <p>将该代码用arduino烧录，注意烧录是选择board为Arduino Leonardo ，Port自查</p>
 <p>点菜单栏里的右箭头即可烧录</p>
-<p><img src="/posts/46874.htm/arduino.png" alt="arduino"></p>
+<p><img src="/2024/01/13/arduino.png" alt="arduino"></p>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="攻击机准备监听"><a href="#攻击机准备监听" class="headerlink" title="攻击机准备监听"></a>攻击机准备监听</h3><p>我的攻击机为kali</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvvp 10080 -k</span><br></pre></td></tr></table></figure>
 <p>该代码的作用是：在10080端口开启一个nc监听，保持连接</p>
 <p>提示，你可能需要开启防火墙</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install ufw</span><br><span class="line">sudo ufw allow 端口号/tcp</span><br><span class="line">sudo ufw <span class="built_in">enable</span></span><br><span class="line">ufw status</span><br></pre></td></tr></table></figure>
-<p><img src="/posts/46874.htm/nclisten.png" alt="nclisten"></p>
+<p><img src="/2024/01/13/nclisten.png" alt="nclisten"></p>
 <h3 id="目标主机插入BadUsb"><a href="#目标主机插入BadUsb" class="headerlink" title="目标主机插入BadUsb"></a>目标主机插入BadUsb</h3><p>目标主机没有安装杀毒软件，但开启windows defender</p>
 <p>现象：延迟5s后打开运行对话框，自动输入指定指令，按下回车后自动执行ps1脚本，同时会把powershell窗口最小化。</p>
 <h3 id="攻击机现象"><a href="#攻击机现象" class="headerlink" title="攻击机现象"></a>攻击机现象</h3><p>usb插入不久后，攻击机上显示已连接上某ip主机，此时按回车会进入powershell，拿下目标主机控制权。</p>
-<p><img src="/posts/46874.htm/ncconnect.png" alt="ncconnect"></p>
+<p><img src="/2024/01/13/ncconnect.png" alt="ncconnect"></p>
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>这次尝试是特殊的，因为其实我之前做的反弹shell并不多，同时这个例子也有一定实际意义。我对于硬件编程有了一定理解，在我将该项目转移使用公网服务器的过程中也遇到了不少挑战。相信以后还可以开发出更好玩的BadUsb。</p>
 <h3 id="亟待解决"><a href="#亟待解决" class="headerlink" title="亟待解决"></a>亟待解决</h3><p>BadUsb肯定是不局限于远程上线的，有更狠的活暂时不会，也有点不敢做，自己以后慢慢研究了。</p>
 <p>BadUsb也可以用来植入木马了，通过powershell 利用certutil可以下载木马等（需要免杀）</p>
