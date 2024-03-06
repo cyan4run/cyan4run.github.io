@@ -11,6 +11,12 @@
         <content type="html"><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>本文提供unraid系统下将独立显卡直通给windows10 虚拟机的教程。国内教程少，且不具体，作者参考了部分帖子和油管视频写这篇文章，希望能给玩虚拟机直通的人有帮助。</p><p>本文环境为</p><p>unraid 6.12.8系统</p><p>虚拟机环境为windows 10 后文会贴出详细配置</p><p>显卡为Nvidia Zotac GTX 1070 Ti（这张显卡似乎有点毛病，一个风扇不转了）</p><h1 id="VMS-Manager-设置"><a href="#VMS-Manager-设置" class="headerlink" title="VMS Manager 设置"></a>VMS Manager 设置</h1><p>打开unraid WebUI</p><p>打开<strong>设置</strong> — <strong>虚拟机管理器</strong> 并打开高级视图</p><p>主要设置的就是<strong>PCIe ACS覆盖</strong> 基本设置为两者（both）或者多功能（multi- function）</p><p>VFIO允许不安全的中断可以选择<strong>是</strong></p><p>设置如下图：</p><p><img src="/2024/03/06/1.png" alt="1"></p><p>PCIe ACS覆盖的选择可以多尝试，成功的办法看后一节</p><h1 id="隔离显卡"><a href="#隔离显卡" class="headerlink" title="隔离显卡"></a>隔离显卡</h1><p>打开<strong>工具</strong> — <strong>系统设备</strong> 等待加载一会儿</p><p>可以看到加载出来的<strong>IOMMU group</strong></p><p>从这些组中找到N卡相关的组如图：</p><p>[<img src="/2024/03/06/2.png" alt="2"></p><p>只要能都打上勾，选择绑定，就成功隔离了显卡，这一步成功就代表上面PCIe ACS设置是正确的</p><p>此外，这一步会提示需要重启，重启成功后进行下一步操作。</p><p>重启完以后，unraid仪表盘如果下载有GPU statistics，就已经检测不到显卡了</p><h1 id="设置windows虚拟机"><a href="#设置windows虚拟机" class="headerlink" title="设置windows虚拟机"></a>设置windows虚拟机</h1><p>这一步要安装windows</p><p>无需多言，上配置图：</p><p>首先选择合适的CPU和内存，机器我这边选择i440fx ，Q35兼容性会好点</p><p>BIOS选择SeaBIOS兼容性好</p><p>Hyper-V就是是否虚拟化，选是就行</p><p>usb控制器，打上3.0就行</p><p>然后选择我们的win10镜像，这个镜像直接用ssh工具连上服务器以后传到isos里就可以被识别了</p><p>这个光盘总线都用sata，实测用其他的检测不到，需要加载驱动</p><p>VirtIO驱动很关键，只有它才能给你虚拟机上网，去前文VM Manager设置里下载最新的就行，然后这里能选它</p><p><img src="/2024/03/06/3.png" alt="3"></p><p>接下来是磁盘设置</p><p>我设置了多个盘，一开始测试直接自动就行，总线记得选sata一样的道理，其他的不用改</p><p><img src="/2024/03/06/4.png" alt="4"></p><p>显卡部分，我设置了两个输出</p><p>一个是VNC连接，避免显卡可能输出视频有问题的情况出现，可以先给显卡打上驱动（虽然貌似不会有显卡输出不了的问题，要是有，可以试试插拔一下DP/HDMI接口线）</p><p>第二个就是N卡，Rom BIOS不用填 声卡也选上</p><p>网络资源默认就行，USB设备选择你要连接的外设就行，一般键盘鼠标</p><p><img src="/2024/03/06/5.png" alt="5"></p><h1 id="驱动安装"><a href="#驱动安装" class="headerlink" title="驱动安装"></a>驱动安装</h1><p>安装系统不赘述</p><h2 id="网卡驱动"><a href="#网卡驱动" class="headerlink" title="网卡驱动"></a>网卡驱动</h2><p>安装完，会发现没网络。原因就是网卡驱动没有</p><p>解决办法：加载VirtIO驱动</p><p>打开文件管理器，会发现有个多出的盘，就是VirtIO驱动位置。</p><p>打开设备管理器，选择那个打⚠️的以太网接口，更新驱动，从本地那个VirtIO盘加载就行</p><p>这样就连上网了</p><h2 id="显卡驱动"><a href="#显卡驱动" class="headerlink" title="显卡驱动"></a>显卡驱动</h2><p>简单，上Nvidia官网安装对应驱动就行</p><p>安装完，设备管理器应该能识别到对应的显卡名字了</p>]]></content>
       
       
+      <categories>
+          
+          <category> 硬件 </category>
+          
+      </categories>
+      
       
         <tags>
             
