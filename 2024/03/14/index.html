@@ -1,0 +1,602 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>【计算机组成原理】系统总线 | Lincoxi wanna learn sth!</title><meta name="author" content="lincoxi"><meta name="copyright" content="lincoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="总线概述概念定义：总线(BUS)是计算机各个部件（或系统）之间传递信息的一组共享的电导线  每根导线负责传递一个电脉冲信号，即一位二进制数据 若干根导线即可同时传输若干位二进制数据  组成：总线一般由传输线+接口+总线控制器组成 传输线包括：  传输线 \begin{cases} 信息线\begin{cases} 数据总线\\ 地址总线\\ 控制总线 \end{cases}\\ 电源线\\ 地线等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【计算机组成原理】系统总线">
+<meta property="og:url" content="http://lincoxi.top/2024/03/14/index.html">
+<meta property="og:site_name" content="Lincoxi wanna learn sth!">
+<meta property="og:description" content="总线概述概念定义：总线(BUS)是计算机各个部件（或系统）之间传递信息的一组共享的电导线  每根导线负责传递一个电脉冲信号，即一位二进制数据 若干根导线即可同时传输若干位二进制数据  组成：总线一般由传输线+接口+总线控制器组成 传输线包括：  传输线 \begin{cases} 信息线\begin{cases} 数据总线\\ 地址总线\\ 控制总线 \end{cases}\\ 电源线\\ 地线等">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://lincoxi.top/img/tom.WEBP">
+<meta property="article:published_time" content="2024-03-14T06:47:48.000Z">
+<meta property="article:modified_time" content="2024-03-14T06:54:29.992Z">
+<meta property="article:author" content="lincoxi">
+<meta property="article:tag" content="硬件">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lincoxi.top/img/tom.WEBP"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://lincoxi.top/2024/03/14/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '【计算机组成原理】系统总线',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-14 14:54:29'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mycss.css"><meta name="generator" content="Hexo 7.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tom.WEBP" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/index.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Lincoxi wanna learn sth!"><span class="site-name">Lincoxi wanna learn sth!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">【计算机组成原理】系统总线</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-14T06:47:48.000Z" title="发表于 2024-03-14 14:47:48">2024-03-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-14T06:54:29.992Z" title="更新于 2024-03-14 14:54:29">2024-03-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="leancloud_visitors" id="/2024/03/14/" data-flag-title="【计算机组成原理】系统总线"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span class="leancloud-visitors-count"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="总线概述"><a href="#总线概述" class="headerlink" title="总线概述"></a>总线概述</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>定义：<strong>总线(BUS)</strong>是计算机各个部件（或系统）之间传递信息的一组共享的电导线</p>
+<blockquote>
+<p>每根导线负责传递一个电脉冲信号，即一位二进制数据</p>
+<p>若干根导线即可同时传输若干位二进制数据</p>
+</blockquote>
+<p>组成：总线一般由<strong>传输线+接口+总线控制器</strong>组成</p>
+<p>传输线包括：</p>
+<script type="math/tex; mode=display">
+传输线
+\begin{cases}
+信息线\begin{cases}
+数据总线\\
+地址总线\\
+控制总线
+\end{cases}\\
+电源线\\
+地线等
+\end{cases}</script><p>总线从逻辑上有：1.输入 2.输出 3.断开   三种状态</p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><h3 id="功能特性"><a href="#功能特性" class="headerlink" title="功能特性"></a>功能特性</h3><p>按传输信息性质分：地址总线、数据总线、控制总线</p>
+<p>按连接部件分：系统总线（处理器总线）、输入输出总线（I/O总线）</p>
+<p>​                                           </p>
+<p>按照计算机系统中的位置分为：片内总线、底板总线、板间总线、通信总线</p>
+<p>包括：插头、插座的几何形状与尺寸、引脚的数量和排列方式、固定方式</p>
+<p>对通信总线，根据所传数据位数又可以分为：串行总线（一根）、并行总线（多根）</p>
+<blockquote>
+<p>总线传递的是数据和命令</p>
+</blockquote>
+<h3 id="电气特性"><a href="#电气特性" class="headerlink" title="电气特性"></a>电气特性</h3><p>定义了每根传输线上信号的<strong>传递方向</strong>和<strong>有效电平范围</strong></p>
+<p>按允许信息传输的方向分：单向总线和双向总线</p>
+<p>双向总线又分为全双工和半双工</p>
+<blockquote>
+<p>全双工指同一时刻允许信息分别沿两个方向传输</p>
+<p>半双工指同一时刻只允许信息沿一个方向传输</p>
+</blockquote>
+<p>多数总线信号采用正逻辑</p>
+<blockquote>
+<p>高电平定义逻辑1</p>
+</blockquote>
+<h3 id="时间特性"><a href="#时间特性" class="headerlink" title="时间特性"></a>时间特性</h3><p>规定了每一根传输线上的信号在什么时候有效</p>
+<p>即总线上的各种信号的时序关系</p>
+<h3 id="总线技术特点"><a href="#总线技术特点" class="headerlink" title="总线技术特点"></a>总线技术特点</h3><p>1.使系统中的连线大大减少，可靠性高</p>
+<p>2.便于硬件和软件的标准化，便于接口设计</p>
+<p>3.易于系统模块化，可替换性好</p>
+<p>4.便于维修。可维护性好</p>
+<p>5.分时传送，任意时刻只有一个源发送，可以由多个部件接收</p>
+<p>6.有仲裁机制</p>
+<p>7.缺点：传输率受带宽限制 ，总线若故障，系统瘫痪</p>
+<h1 id="总线控制"><a href="#总线控制" class="headerlink" title="总线控制"></a>总线控制</h1><h2 id="总线控制的功能和特点"><a href="#总线控制的功能和特点" class="headerlink" title="总线控制的功能和特点"></a>总线控制的功能和特点</h2><p>总线控制就是管理总线的使用</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+总线资源的管理
+\begin{cases}
+资源：存储空间、I/O空间、中断、通道\\
+管理：资源分配、冲突判定、设备选择、启动、复位\\
+\end{cases}\\
+总线仲裁\\
+总线定时（通信控制）\\
+总线连接，实现不同总线协议的转换\\
+\end{cases}</script><blockquote>
+<p>特点：总线控制的功能由总线控制器来完成。而总线控制器在实现技术上并不一定存在一个独立的控制器模块。它的功能可能分布在总线的各个部件或设备上。</p>
+</blockquote>
+<h2 id="总线仲裁"><a href="#总线仲裁" class="headerlink" title="总线仲裁"></a>总线仲裁</h2><h3 id="总线设备分类"><a href="#总线设备分类" class="headerlink" title="总线设备分类"></a>总线设备分类</h3><p>按控制能力分：总线主设备和主线从设备</p>
+<blockquote>
+<p>总线主设备对总线具有控制能力，是信息传送的发起者</p>
+<p>总线从设备对总线没有控制权，只能响应总线命令</p>
+</blockquote>
+<p>按信息传送分：总线源设备和总线目的设备</p>
+<p>按访问控制分：存储器设备和I/O设备</p>
+<h3 id="总线仲裁分类"><a href="#总线仲裁分类" class="headerlink" title="总线仲裁分类"></a>总线仲裁分类</h3><blockquote>
+<p>从不同角度有不同分类方法</p>
+</blockquote>
+<p>根据仲裁电路结构：串行仲裁和并行仲裁</p>
+<p>优先排队策略：固定优先级和动态优先级</p>
+<p>仲裁电路分布：集中仲裁和分布仲裁</p>
+<p>设备状态：设备请求方式（主动）和控制器查询方式（被动）</p>
+<h3 id="集中仲裁的方式和特点"><a href="#集中仲裁的方式和特点" class="headerlink" title="集中仲裁的方式和特点"></a>集中仲裁的方式和特点</h3><h4 id="链式查询"><a href="#链式查询" class="headerlink" title="链式查询"></a>链式查询</h4><blockquote>
+<p>通过一条判优链路（优先链）对所有主设备逐个串行进行查询</p>
+</blockquote>
+<p>有三条线：BS总线忙、BR总线请求、BG总线同意</p>
+<p>如图：</p>
+<p><img src="/2024/03/14/链式查询.png" alt="链式查询"></p>
+<p>查询方法：</p>
+<p>从离总线控制部件最近的设备开始查。首先查到的肯定是提出请求设备中优先权最高的一个。查到设备后，该设备通过总线忙卡断判优链路，占用总线；当操作结束后，该设备应当及时释放总线</p>
+<p>特点：</p>
+<ol>
+<li>结构简单，易于扩充设备</li>
+<li>对电路故障<strong>很敏感</strong></li>
+<li>仲裁公平性差，固定优先级</li>
+</ol>
+<h4 id="计数器定时查询"><a href="#计数器定时查询" class="headerlink" title="计数器定时查询"></a>计数器定时查询</h4><blockquote>
+<p>多加了设备地址线</p>
+</blockquote>
+<p><img src="/2024/03/14/计数器查询.png" alt="计数器查询"></p>
+<p>查询方式：</p>
+<p>  查询开始，计数器计数。每计一次数，就将计数值作为设备地址发往各个设备。每个申请总线的设备对地址进行识别，地址符合的设备获得总线控制权，停止计数。   </p>
+<p>优先级设定：由计数初值决定最高优先级，3种方法。  </p>
+<p>  a.查询时计数器从‘0’开始计数，即0号设备的优先级最高；    </p>
+<p>  b.查询时计数器从上一次查询的终止点开始计数，则终止点优先级最高。此时优先级是循环的；   </p>
+<p>  c.计数初值由程序设定，此时优先级可编程改变。</p>
+<p>特点：</p>
+<ol>
+<li>软件查询、优先级控制方式灵活</li>
+<li>对电路故障<strong>不敏感</strong></li>
+<li>控制较复杂（增加了设备地址线）</li>
+</ol>
+<h4 id="独立请求方式"><a href="#独立请求方式" class="headerlink" title="独立请求方式"></a>独立请求方式</h4><blockquote>
+<p>每个设备都有一组BGBR线</p>
+</blockquote>
+<p><img src="/2024/03/14/独立请求.png" alt="独立请求"></p>
+<p>查询方式：</p>
+<p>   每一个设备专门有一根BR线和BG线，各自通过独立的请求线向总线控制部件发请求，总线控制器里设置并行排队线路，同时接收各设备发来的请求信号并同时进行排队判优，然后通过各自独立的回答线发出总线同意信号。 </p>
+<p>特点：</p>
+<ol>
+<li>响应速度快</li>
+<li>优先级控制灵活</li>
+<li>不适合多设备的场合</li>
+</ol>
+<h2 id="总线通信控制"><a href="#总线通信控制" class="headerlink" title="总线通信控制"></a>总线通信控制</h2><p>为了完成一次有效的通信，源设备与目的设备之间需要进行一系列有时序限制的操作。为此，通信双方需要“感知”对方的操作及操作效果，这个“感知”由总线通信控制来实现的。</p>
+<p>总线通信控制方法分两大类：无须感知和需要感知</p>
+<p>无需感知指通信双方相互信任，每一个通信步骤都会在规定的时间内正确完成；</p>
+<p>如果通信双方不能完全相互信任则需要感知</p>
+<p>基于“无须感知”观点进行总线通信控制的通信称为同步通信，基于“需要感知”观点进行总线通信控制的通信称为异步通信。</p>
+<h2 id="总线通信控制-1"><a href="#总线通信控制-1" class="headerlink" title="总线通信控制"></a>总线通信控制</h2><blockquote>
+<p>目的是要解决通信双方协调配合问题</p>
+</blockquote>
+<script type="math/tex; mode=display">
+总线传输周期
+\begin{cases}
+申请分配阶段 \space 主模块申请，总线仲裁决定\\
+寻址阶段 \space 主模块向从模块给出地址和命令\\
+传数阶段 \space 主模块和从模块交换数据\\
+结束阶段 \space 主模块撤销有关信息
+\end{cases}</script><p><strong>总线周期</strong>：</p>
+<p><strong>一次完整的总线传送操作所需时间称为总线周期</strong></p>
+<p>总线周期的基本类型:内存读   内存写  外设读  外设写</p>
+<p>正常总线周期：由一次地址传送时间和一次数据传送时间组成 。 </p>
+<blockquote>
+<p>总线上数据的读/写方向是相对于主模块而言的，即：读：由从模块发送，主模块接收。即从主模块的角度看是读入（接收）； 写：由主模块发送，从模块接收。即从主模块的角度看是向对方写（发送）。</p>
+</blockquote>
+<h3 id="总线通信的四种方式"><a href="#总线通信的四种方式" class="headerlink" title="总线通信的四种方式"></a>总线通信的四种方式</h3><h4 id="同步通信"><a href="#同步通信" class="headerlink" title="同步通信"></a>同步通信</h4><blockquote>
+<p>由统一时钟信号控制数据传送</p>
+</blockquote>
+<p>同步通信是指参与通信的两个部件之间的信息传送是由定宽、定距的时标来控制的。</p>
+<p>每隔一个时标，源设备就向总线发送一个数据，而不去对目的设备是否收到数据进行确认； 同样地，目的设备每隔一个时标就对总线进行采样来获取数据，而不去确认数据是否已发出，也不向源设备确认收到的数据是正确的。</p>
+<p>特点：</p>
+<ol>
+<li>强制性同步，采用统一时钟；简单易控制。</li>
+<li>对于每一个操作，每一时间都有明确的规定，显得比较“死板”</li>
+<li>必须按照工作速度最慢的部件来设计时钟。</li>
+<li>当各个模块的存取时间相差较大时，会大大损失总线的工作效率</li>
+<li>适用于总线长度较短，各模块部件存取时间比较一致的场合</li>
+</ol>
+<p><img src="/2024/03/14/同步通信.png" alt="同步通信" style="zoom:50%;"></p>
+<p><img src="/2024/03/14/同步通信1.png" alt="同步通信" style="zoom:50%;"></p>
+<h4 id="异步通信"><a href="#异步通信" class="headerlink" title="异步通信"></a>异步通信</h4><blockquote>
+<p>采用应答方式，没有公共的时钟标准</p>
+</blockquote>
+<p>异步通信是指参与通信的两个部件需要“感知”对方的操作，这个“感知”是通过“握手”信号实现的。</p>
+<p>异步通信主要应用于：</p>
+<ol>
+<li>工作速率不同的部件之间相互通信</li>
+<li>通信线路受到干扰的场合</li>
+</ol>
+<p>异步通信的“握手”协议分为：</p>
+<ol>
+<li>单边控制 通信过程是由源部件<strong>或</strong>目的部件控制</li>
+<li>双边控制 通信过程由<strong>源部件和目的部件共同控制</strong></li>
+</ol>
+<blockquote>
+<p>异步通信既可以用于并行传送也可以用于串行传送</p>
+</blockquote>
+<p>异步串行通信的数据传输率可以用波特率和比特率来衡量</p>
+<blockquote>
+<p>波特率—单位时间内传送二进制数据的位数，单位：bps</p>
+<p>比特率—单位时间内传送二进制有效数据的位数，单位：bps</p>
+</blockquote>
+<h4 id="半同步通信"><a href="#半同步通信" class="headerlink" title="半同步通信"></a>半同步通信</h4><blockquote>
+<p>同步、异步结合</p>
+</blockquote>
+<p>同步 发送方用时钟前沿发信号 接收方用系统时间后沿判断识别</p>
+<p>异步 允许不同速度的模块和谐工作</p>
+<pre><code>     增加一条等待响应信号WAIT
+</code></pre><p><img src="/2024/03/14/半同步.png" alt="半同步" style="zoom:50%;"></p>
+<p><img src="/2024/03/14/半同步1.png" alt="半同步" style="zoom:50%;"></p>
+<blockquote>
+<p>上述三种通信的共同点</p>
+<p>一个总线传输周期（以输入数据为例）</p>
+<p>主模块发地址 、命令      占用总线</p>
+<p>从模块准备数据               不占用总线</p>
+<p>从模块向主模块发数据   占用总线</p>
+</blockquote>
+<h4 id="分离式通信"><a href="#分离式通信" class="headerlink" title="分离式通信"></a>分离式通信</h4><blockquote>
+<p>充分挖掘系统总线每瞬间的潜力\</p>
+</blockquote>
+<p>一个总线传输周期</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+子周期1 \space 主模块申请占用总线，使用完后即放弃总线的使用权\\
+子周期2 \space 从模块申请占用总线，将各种信息送至总线上
+\end{cases}</script><p>特点：</p>
+<ol>
+<li>各模块有权申请占用总线</li>
+<li>采用同步方式通信，不等对方回答</li>
+<li>各模块准备数据时，不占用总线</li>
+<li>总线被占用时，无空闲</li>
+</ol>
+<blockquote>
+<p>充分发挥的总线的有效占用</p>
+</blockquote>
+<h1 id="总线结构"><a href="#总线结构" class="headerlink" title="总线结构"></a>总线结构</h1><h2 id="单总线结构"><a href="#单总线结构" class="headerlink" title="单总线结构"></a>单总线结构</h2><p><img src="/2024/03/14/单总线.png" alt="单总线"></p>
+<p>特点：</p>
+<ol>
+<li>控制简单、便于扩充、造价低</li>
+<li>易形成系统的瓶颈</li>
+</ol>
+<p>缺陷：</p>
+<ol>
+<li>由于各部件只能分时使用总线，系统工作效率低</li>
+<li>总线设备之间传输速率不匹配</li>
+</ol>
+<h2 id="多总线结构"><a href="#多总线结构" class="headerlink" title="多总线结构"></a>多总线结构</h2><blockquote>
+<p>采用多种速率不同的总线，将工作速度相差较大的设备挂在不同的总线上，低速总线作为高速总线的一个设备工作。</p>
+</blockquote>
+<h3 id="双总线结构"><a href="#双总线结构" class="headerlink" title="双总线结构"></a>双总线结构</h3><p><img src="/2024/03/14/双总线.png" alt="双总线"></p>
+<h3 id="三总线结构"><a href="#三总线结构" class="headerlink" title="三总线结构"></a>三总线结构</h3><p><img src="/2024/03/14/三总线.png" alt="三总线"></p>
+<p>PCI总线就是一种三总线结构，由下图可知PCI总线通过PCI桥路与CPU总线相连。这种结构使CPU总线与PCI总线互相隔离，具有更高的灵活性，可以支持更多的高速运行设备，而且具有即插即用的特性。</p>
+<p><img src="/2024/03/14/三总线1.png" alt="三总线1"></p>
+<h3 id="四总线结构"><a href="#四总线结构" class="headerlink" title="四总线结构"></a>四总线结构</h3><blockquote>
+<p>增加了一条与计算机系统紧密相连的高速总线。</p>
+<p>高速设备自身很少依赖处理器，而且比扩展总线的设备更贴近处理器，对高性能的设备与处理器来说，效率有很大提高。</p>
+</blockquote>
+<p><img src="/2024/03/14/四总线.png" alt="四总线"></p>
+<h2 id="总线结构对系统性能的影响"><a href="#总线结构对系统性能的影响" class="headerlink" title="总线结构对系统性能的影响"></a>总线结构对系统性能的影响</h2><p>系统中总线条数越多，系统并行性越好，工作效率越高，结构越复杂，造价越高。系统中总线条数越少，越强调分时使用总线，工作效率越受影响，结构越简单，成本越低。</p>
+<h1 id="总线的性能指标"><a href="#总线的性能指标" class="headerlink" title="总线的性能指标"></a>总线的性能指标</h1><h2 id="位宽"><a href="#位宽" class="headerlink" title="位宽"></a>位宽</h2><p>总线一次同时传送的信息位数或所需的线数。即一次操作可以传输的数据位数。主要是指数据总线的数目。</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+S100为8位\\
+ISA为16位\\
+EISA为32位\\
+PCI-2可达64位
+\end{cases}</script><p>总线的位宽直接影响总线的传输率（吞吐量）。</p>
+<h2 id="工作时钟频率"><a href="#工作时钟频率" class="headerlink" title="工作时钟频率"></a>工作时钟频率</h2><p>控制总线中的时钟信号线所提供的时钟频率。</p>
+<h2 id="标准传输率（总线带宽）"><a href="#标准传输率（总线带宽）" class="headerlink" title="标准传输率（总线带宽）"></a>标准传输率（总线带宽）</h2><p>总线上每秒钟能传输的最大字节量。以MB/S表示</p>
+<p>总线本身所能达到的最高传送速率</p>
+<p><strong>总线带宽＝总线位宽×总线工作频率/8</strong></p>
+<h2 id="负载能力"><a href="#负载能力" class="headerlink" title="负载能力"></a>负载能力</h2><p>总线上所能连接部件的最大个数</p>
+<h2 id="总线复用"><a href="#总线复用" class="headerlink" title="总线复用"></a>总线复用</h2><p>物理线路是一组，功能上地址线 与 数据线 复用――分时复用。</p>
+<h2 id="总线定时协议（握手机制）"><a href="#总线定时协议（握手机制）" class="headerlink" title="总线定时协议（握手机制）"></a>总线定时协议（握手机制）</h2><p>依据数据传输采用何种时钟控制，可分为同步、异步、半同步、分离式</p>
+<h2 id="几种常见总线的性能"><a href="#几种常见总线的性能" class="headerlink" title="几种常见总线的性能"></a>几种常见总线的性能</h2><p><img src="/2024/03/14/总线性能.png" alt="总线性能"></p>
+<h1 id="常用总线标准"><a href="#常用总线标准" class="headerlink" title="常用总线标准"></a>常用总线标准</h1><blockquote>
+<p>总线标准：</p>
+<p>为适应模块化设计，使各生产厂家的产品具有可组合性和可替换性，需要对总线进行规范，提出一种标准的信息传递通道。</p>
+<p>总线标准分为两类：</p>
+<p>一类是由国际权威机构制定的（ RS—232C  是美国电子工业协会（EIA）制定的） ，另一类是由某厂家设计而广泛流行的（PCI总线：Intel联合IBM，Compaq等100多家公司联合共同开发）</p>
+</blockquote>
+<h2 id="系统总线"><a href="#系统总线" class="headerlink" title="系统总线"></a>系统总线</h2><h3 id="S-100总线"><a href="#S-100总线" class="headerlink" title="S-100总线"></a>S-100总线</h3><p>S-100总线产生于1975年，第一个标准化总线，它有l00条信号线，是为8080微处理器设计的。</p>
+<p>这种总线的主要缺点：</p>
+<p>1）布线不合理，时钟信号线位于9条控制信号线之间，容易造成串扰；</p>
+<p>2）只规定了两条地线，接地点太少，容易造成地线干扰；</p>
+<p>3）对DMA传送虽然作了考虑，但对所需引脚并未明确定义；</p>
+<p>4）将＋8V与－18V电源紧排在一起，又没有保护措施，一旦插入操作有误，使＋8V与－18V相碰，轻则损坏电压调整器，重则使接到＋5V上的所有集成电路报废。</p>
+<p>没有总线仲裁机构，因此不适于多处理器系统。这种总线目前已很少有人使用。</p>
+<h3 id="IBM-PC总线和ISA总线"><a href="#IBM-PC总线和ISA总线" class="headerlink" title="IBM PC总线和ISA总线"></a>IBM PC总线和ISA总线</h3><p>IBM PC总线是IBM PC/XT个人计算机采用的微型机总线。它是针对Intel 8088微处理器设计的，有62条信号线，以适应8088的8位数据线和20位地址线。      为了和Inte1 80286等高性能16位微处理器兼容，IBM公司在PC总线基础上增加了一个36引脚的AT扩展插座而形成AT总线。在IBMPC/AT及其兼容机的机箱中，通常在母板上分别设置几个AT插槽和PC插槽，这种结构也称之为IBM公司的ISA结构(即工业标准结构)。IBM PC/AT总线也称为ISA总线。      ISA是将微处理器芯片总线经缓冲直接映射到系统总线上，也是一种原始的总线设计。并且，ISA总线没有支持总线仲裁的硬件逻辑，所以不支持多主设备系统。       现在，ISA总线仍然被使用，特别是在工控机中。但在这种微机系统中，为了发挥32位微处理器的性能，往往把主板上的存储器直接连到CPU的芯片总线上，而ISA总线仅作为扩展I/O模块的总线。</p>
+<h3 id="PC-104总线"><a href="#PC-104总线" class="headerlink" title="PC-104总线"></a>PC-104总线</h3><p>采用超小尺寸插卡；自叠总线结构；总线驱动电流小，功耗低。现在大量地用于工业控制系统中，在信号上与ISA总线兼容。</p>
+<h3 id="Multibus-Ⅰ和Ⅱ"><a href="#Multibus-Ⅰ和Ⅱ" class="headerlink" title="Multibus Ⅰ和Ⅱ"></a>Multibus Ⅰ和Ⅱ</h3><p>Intel公司的Multibus总线是一种能支持多处理器并行运行的总线。这种总线实际存在多种总线概念，即包括系统总线、局部总线、和板上I/O扩展总线SBX、LBX。这也是多总线(Multibus)得名的由来。     MultibusⅠ支持8位、16位的微处理器，采用单功能模板概念，适用于工业控制。MultibusⅡ支持32位微处理器。 </p>
+<h3 id="VME总线"><a href="#VME总线" class="headerlink" title="VME总线"></a>VME总线</h3><p>MOTOTOLA公司的VME总线（IEEE（美国电子电机工程师协会） 1014标准）也是一种支持多计算机/多处理器的系统总线。    支持16、32位微处理器，支持四个主CPU模板并行运行。 这种高性能总线是开放式总线结构，受到许多厂家，特别是欧洲以及那些与Motorola68000微处理器有关的用户欢迎。</p>
+<h3 id="微通道MCA"><a href="#微通道MCA" class="headerlink" title="微通道MCA"></a>微通道MCA</h3><p>BM公司于1987年推出微通道总线(Micro Channel Architecture)，即MCA。它是带有 24位DMA的10MHz总线，提供16MB的寻址能力，32位数据总线。它配有总线仲裁机构，可支持16个总线主控器。    </p>
+<p>优点：</p>
+<p>它是一个经过很好定义的32位总线标准，有利于形成更好更可靠的产品。   </p>
+<p> 缺点：</p>
+<p>缺乏与已有硬件的兼容性，非开放式结构。微通道的研制成功，彻底改变了IBM公司于1981年为IBM PC扩展而建立的开放式硬件标准，回到了的老路。微通道与PC机的非兼容性为它自身的发展造成了困难。</p>
+<h3 id="EISA总线-Extend-industry-Standard-Architecture"><a href="#EISA总线-Extend-industry-Standard-Architecture" class="headerlink" title="EISA总线(Extend  industry Standard  Architecture)"></a>EISA总线(Extend  industry Standard  Architecture)</h3><p>以Compaq为首联合起来推出的。     </p>
+<p> EISA是ISA总线的扩展，它既保持了与老的IBM PC系列机兼容，又具有MCA的先进性，但不与MCA兼容。      </p>
+<p><strong>该总线作为ISA总线完全兼容的扩展</strong>，支持多个总线主控器，并加强了DMA功能，增加了突发方式传输，是一种支持多处理机的高性能<strong>32位</strong>标准总线。</p>
+<h3 id="采用总线复用技术的Q总线和NUBUS"><a href="#采用总线复用技术的Q总线和NUBUS" class="headerlink" title="采用总线复用技术的Q总线和NUBUS"></a>采用总线复用技术的Q总线和NUBUS</h3><p>Q总线：DEC公司的工业总线，它采用复用数据线和地址线的办法来支持16位和32位微型化的小型机。      </p>
+<p>NUBUS：APPLE公司和TI公司提出的，则采用数据总线、地址总线和控制总线三条总线复用44条信号线，另加5条总线仲裁，可支持32位微处理器。APPLE和TI公司希望用这种总线取代微通道总线。 </p>
+<h3 id="STD总线"><a href="#STD总线" class="headerlink" title="STD总线"></a>STD总线</h3><p>1987年，STD总线最初的设计目标是和所有8位微处理器相兼容，以小尺寸(4.5in×6.5in)、高可靠性、低价格的面貌出现，为嵌入式系统提供解决手段。通常人们把STD总线称为“兰领总线”，因为它把侧重点放在工业测控应用上。    16位微处理器出现后，为了仍旧能使用该总线，采用周期窃取和总线复用技术来扩充地址线和数据线，所以STD是8位/16位兼容的总线。为了能和32位微处理器80386、80486、68030等兼容，近年来又定义了STD32总线标准，且与原来8位总线的I/O模板兼容。 </p>
+<h2 id="局部总线"><a href="#局部总线" class="headerlink" title="局部总线"></a>局部总线</h2><blockquote>
+<p>局部总线是为解决高性能CPU与低性能的系统总线之间的瓶颈问题而提出的。出于对兼容性的考虑，还不能将ISA总线淘汰掉，所以需要一个变通办法来解决该瓶颈，办法之一就是采用局部总线。</p>
+</blockquote>
+<p>高性能CPU的芯片总线可以支持很高的数据传输率，因而可将某些模块直接挂接在芯片总线上，实际上许多主板上的存储器都是采用该方法。但对于多个模块，CPU的芯片总线驱动就能力不够了，因而需增加驱动电路，这样就形成了局部总线，它为CPU和高速的外设间提供了一条直接通路。</p>
+<h3 id="VL-BUS"><a href="#VL-BUS" class="headerlink" title="VL-BUS"></a>VL-BUS</h3><p>VESA（视频电子标准协会）与60余家公司联合推出的局部总线；32bit总线，在标准的ISA插槽之后提供附加的第三和第四接口，额定频率33MHz，并且能够提供超过ISA的卓越性能。    </p>
+<p>VL-BUS最主要的特点也是其没落的最主要原因。本来，它是作为486处理器/内存总线的直接扩展，运行在与处理器相同的频率上，因此名为“本地总线”。这种直接的扩展意味着如果连接的设备过多，则很可能会干扰处理器自身的工作，特别是当信号通过一个插槽时。VESA建议在33MHz的频率上只使用2个插槽，或者在总线使用电子缓冲时使用3个。在更高的频率上不能连接2个以上的设备，而在50MHz时它们则必须都内建于主板内。</p>
+<h3 id="PCI总线"><a href="#PCI总线" class="headerlink" title="PCI总线*"></a>PCI总线*</h3><p>PCI总线是厂家自发制定的一种企业联盟标准总线，是专门为奔腾系列芯片而设计，可满足图形界面及高速传输率扩展卡的需求。Intel公司于1991年首先提出了PCI总线的概念。之后，Intel联合IBM，Compaq等100多家公司联合共同开发PCI总线，并于1993年推出了PCI总线标准。因局部总线PCI等非常流行和普及，现在大多数人认为局部总线PCI等就是系统总线。因此，局部总线和系统总线没有本质区别，现在统称为系统总线。   </p>
+<p>PCI总线的特点:</p>
+<ol>
+<li>独立于处理器。工作频率与CPU时钟无关，可支持多机系统及未来的处理器。</li>
+<li>传输效率高。支持64位数据总线，总线速度为66MHz，最大数据传输率达528MB/s。</li>
+<li>多总线共存。PCI有良好的兼容性，可支持ISA，EISA，MCA，SCSI，IDE等多种总线，同时还预留了发展空间。</li>
+<li>支持两种电压。PCI提供两种信号环境：5V和3.3V，并可进行两种环境的转换，扩大了的适应范围。</li>
+<li>具有即插即用功能。PCI标准允许PCI局部总线扩展卡和元件进行自动配置，提供了即插即用的能力。 </li>
+<li>合理的管脚安排。PCI总线采用数据线和地址线复用结构，减少了总线的引用脚数，从而可节省线路空间降低设计成本，目标设备可用47引脚，总线主控设备可用49引脚。</li>
+<li>PCI对32位与64位总线的使用是透明的，它允许32位与64位器件相互协作。</li>
+<li>支持突发传输，支持总线主控方式，采用同步操作。</li>
+</ol>
+<h2 id="设备总线"><a href="#设备总线" class="headerlink" title="设备总线"></a>设备总线</h2><blockquote>
+<p>计算机与外部设备的信息交换称为通信，这里的设备可以是外部设备，也可以是计算机。设备总线，也称为通信总线，就是实现计算机或外部设备间互连的一类总线。按通信方式可分为并行总线和串行总线。</p>
+</blockquote>
+<h2 id="RS-232C"><a href="#RS-232C" class="headerlink" title="RS-232C"></a>RS-232C</h2><p>是美国电子工业协会（EIA）与BELL等公司一起开发的1969年颁布的数据通信协议。字母RS表示Recommanded  Standard（推荐标准），232是识别代码，C是标准的版本号。</p>
+<p>RS232C总线的特点：</p>
+<ol>
+<li>可实现双工通信</li>
+<li>具有多种传输速率，可适应不同速率的外设</li>
+<li>采用串行传输方式，传输距离远 </li>
+<li>采用负逻辑，抗干扰能力强</li>
+</ol>
+<h3 id="SCSI总线-small-computer-system-interface"><a href="#SCSI总线-small-computer-system-interface" class="headerlink" title="SCSI总线(small computer system interface)"></a>SCSI总线(small computer system interface)</h3><p> SCSI是小型计算机系统接口简称。SCSI接口是高速硬盘接口规范，采用8/16/32位并行总线，可用于硬盘、光盘、扫描仪、打印机、磁带机等多种外围设备的连接。</p>
+<h3 id="ATA（AT-Attachment）"><a href="#ATA（AT-Attachment）" class="headerlink" title="ATA（AT Attachment）"></a>ATA（AT Attachment）</h3><p>又称<strong>IDE</strong>（Integrated Drive Electronics）。从1985年上市到1992年，它一直是纯硬盘驱动接口。为了与SCSI竞争，WD公司推出了增强型IDE标准EIDE，即ATA-2标准，ATA-2不仅可以连接硬盘，而且可以连接CD-ROM磁带机等存储设备，它允许接4台设备，支持大于528MB的硬盘容量。</p>
+<h3 id="IEEE488"><a href="#IEEE488" class="headerlink" title="IEEE488"></a>IEEE488</h3><p>是HP公司在20世纪70年代为解决各种仪器仪表与各类计算机接口互不兼容的问题而研制的通用接口总线HP-IB。1975年IEEE委员会以IEEE488标准予以推荐。</p>
+<p>IEEE488总线包括8条双向数据线，3条字节传送控制线和5条通用控制线，它可以将计算机，电压表，电源，频率发生器等装置通过一条488总线电缆连接起来。IEEE488系统以机架层叠式智能仪器为主要器件，可以以积木方式构成开放式系统。</p>
+<h3 id="Centronics"><a href="#Centronics" class="headerlink" title="Centronics"></a>Centronics</h3><p>Centronics是一个打印机厂商的名字，也是一种较早推出的计算机与打印机和绘图仪进行连接的并行总线。该总线由36个信号线构成，采用扁平电缆或多芯电缆 进行8位数据传输，传输率为100KB/s，最大传送距离为2m。在用扁平电缆做传输线时，每两条传输线之间加一条地线，较好的克服了数据间的干扰。这种总线应用非常广泛，有多外设通过Centronics总线和计算机进行通信，例如：编程器、大容量软盘驱动器和刻录光驱等。</p>
+<h3 id="USB-UNIVERSAL-SERIAL-BUS"><a href="#USB-UNIVERSAL-SERIAL-BUS" class="headerlink" title="USB(UNIVERSAL SERIAL BUS )  *"></a>USB(UNIVERSAL SERIAL BUS )  *</h3><p>USB总线是1994年以Intel为首包括Compad、HP、Lucent、Microsoft、NEC、Philips7家公司联合发布的新一代通用串行总线。1996年推出了标准版本USB1.0， 2000年又推出了标准版本USB2.0, 2008年发布了USB3.0标准，最大传输带宽高达625MB/s。USB有可能取代许多总线标准，成为微机与许多外设或系统进行连接的主要或唯一的途径。</p>
+<p>USB的特点  ：</p>
+<blockquote>
+<p>USB是一种快速的、双向的、同步的、低成本的可动态加入的串行总线。它有许多优良的性能。</p>
+</blockquote>
+<ol>
+<li><strong>提供热即插即用功能</strong>       连接外设不必打开机箱，也不必关闭主机电源，能够自我识别外设，能自动在驱动器与配置间进行功能映射；可动态地加入与重新配显外设。</li>
+<li><strong>适用范围很宽</strong>       它适用于带宽从几Kb/s到几百Mb/s范围的设备，即可连接键盘、鼠标、摄像头、游戏设备、虚拟现实外设的低速设备，也可连接电话、声卡、麦克风、压缩视频这样的全速设备，还可以连接视频、存储器、图像这样的高速设备。</li>
+<li><strong>总线利用率高</strong>       支持同一束电缆上的同步以及异步传输，支持多设备的并行操作，支持最多127个物理设备，支持主机与设备间的多数据和消息流传输；允许接入复合设备。因为协议的额外开销较低，所以总线利用率很高。</li>
+<li><strong>传输灵活</strong>       它允许传送不同大小的包，并通过适配包的大小与等待时间来允许设备数据率有一定范围的变化；它在协议中建立了用于缓冲处理的流控制。</li>
+<li><strong>机制强壮</strong>      它在协议中建立了错误处理/故障恢复机制；可在被用户察觉的时间内识别动态加入和退出的设备，并支持故障设备的识别。</li>
+<li><strong>提供了低成本的实现方案</strong>       它对外设与主机硬件中的集成进行了优化；适应低成本外设的开发；提供低成本电缆和连接器使用商品技术；USB结构可以升级为在一个系统中支持多个USB主机控制器。</li>
+<li><strong>生命力强</strong>       USB是一种开放性的不具有专利版权的工业标准，因此不存在版权问题，具有强大的生命力。</li>
+</ol>
+<p>USB总线支持以下三种数据速率传输：</p>
+<p>USB高速(high-speed)信号传输位速率为480Mb/s；</p>
+<p>USB全速(full—speed)信号传输位速率为12Mbs；</p>
+<p>有限能力的低速(low-speed)信号传输模式位速率为1.5Mb/s。</p>
+<h3 id="IEEE1394"><a href="#IEEE1394" class="headerlink" title="IEEE1394"></a>IEEE1394</h3><p>是IEEE在APPLE公司的高速串行总线Fire wire（火线）基础上制定的串行总线标准。    1394具有更多的外设支持能力，尤其在影视多媒体方面有优异的支持能力；使用存储器映射地址总线；有真正的即插即用和热插拔能力；提供更长的电缆（设备间4.5m，总线末端间为72m）和更高的速率（数据传输率为50Mb/s、100Mb/s、400Mb/s）。1394十分容易配置，它采用6线连接，树状结构，最多可接63个设备。在存储设备接口中，IEEE1394被认为将有可能取代SCSI及ATA接口。1997年Seagate及Maxtor分别于Comdex’97中展示了1394接口硬盘驱动器的雏形机种，1995年10月，Sony在可摄式录象机上首先将1394接口列为标准。    总之，IEEE1394是一种高速外设总线，就是面对高速外设 的。</p>
+<h3 id="CAN总线"><a href="#CAN总线" class="headerlink" title="CAN总线"></a>CAN总线</h3><p>1986年2月，在SAE（汽车工程人员协会）大会上，Rober Bosch公司提出CAN。这个由Bosch公司设计的新的总线系统．称之为“Automotive Serial Controller Area Network”（汽车串行控制局域网）    1987年， Intel公司推出第一片CAN控制芯片——82526。它是CAN协议的第一个在硬件上的实现。 </p>
+<p>特点：</p>
+<ol>
+<li>CAN是到目前为止唯一有国际标准的现场总线。</li>
+<li>CAN为多主方式工作，网络上任一节点均可在任意时刻主动地向网络上其他节点发送信息，而不分主从。</li>
+<li>在报文标识符上，CAN 上的节点分成不同的优先级，可满足不同的实时要求，优先级高的数据最多可在134μs内得到传输。</li>
+<li>CAN采用非破坏总线仲裁技术。当多个节点同时向总线发迭信息出现冲突时，优先级较低的节点会主动地退出发送，而最高优先级的节点可不受影响地继续传输数据， CAN节点只需通过对报文的标识符滤波即可实现点对点、一点对多点及全局广播等几种方式传送接收数据。</li>
+<li>CAN的直接通信距离最远可达 11 km；通信速率最高可达1Mbps。</li>
+<li>CAN 上的节点数主要取决于总线驱动电路，目前可达 110个。</li>
+<li>CAN的通信介质可为双绞线、同轴电缆或光纤，选择灵活。</li>
+<li>CAN节点在错误严重的情况下具有自动关闭输出功能，以使总线上其他节点的操作不受影响．</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="lincoxi">lincoxi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://lincoxi.top/2024/03/14/">http://lincoxi.top/2024/03/14/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://lincoxi.top" target="_blank">Lincoxi wanna learn sth!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%A1%AC%E4%BB%B6/">硬件</a></div><div class="post_share"><div class="social-share" data-image="/img/tom.WEBP" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/12/" title="【计算机组成原理】概论"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">【计算机组成原理】概论</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/03/12/" title="【计算机组成原理】概论"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-12</div><div class="title">【计算机组成原理】概论</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tom.WEBP" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lincoxi</div><div class="author-info__description">simple blog set</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cyan4run"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cyan4run" target="_blank" title="Github"><i class="fab fa-github" style="color: ;"></i></a><a class="social-icon" href="mailto:eytime@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: ;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">总线概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">1.2.</span> <span class="toc-text">特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E7%89%B9%E6%80%A7"><span class="toc-number">1.2.1.</span> <span class="toc-text">功能特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E6%B0%94%E7%89%B9%E6%80%A7"><span class="toc-number">1.2.2.</span> <span class="toc-text">电气特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E7%89%B9%E6%80%A7"><span class="toc-number">1.2.3.</span> <span class="toc-text">时间特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E6%8A%80%E6%9C%AF%E7%89%B9%E7%82%B9"><span class="toc-number">1.2.4.</span> <span class="toc-text">总线技术特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E6%8E%A7%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text">总线控制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E6%8E%A7%E5%88%B6%E7%9A%84%E5%8A%9F%E8%83%BD%E5%92%8C%E7%89%B9%E7%82%B9"><span class="toc-number">2.1.</span> <span class="toc-text">总线控制的功能和特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E4%BB%B2%E8%A3%81"><span class="toc-number">2.2.</span> <span class="toc-text">总线仲裁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E8%AE%BE%E5%A4%87%E5%88%86%E7%B1%BB"><span class="toc-number">2.2.1.</span> <span class="toc-text">总线设备分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E4%BB%B2%E8%A3%81%E5%88%86%E7%B1%BB"><span class="toc-number">2.2.2.</span> <span class="toc-text">总线仲裁分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E4%B8%AD%E4%BB%B2%E8%A3%81%E7%9A%84%E6%96%B9%E5%BC%8F%E5%92%8C%E7%89%B9%E7%82%B9"><span class="toc-number">2.2.3.</span> <span class="toc-text">集中仲裁的方式和特点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%93%BE%E5%BC%8F%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.2.3.1.</span> <span class="toc-text">链式查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E6%95%B0%E5%99%A8%E5%AE%9A%E6%97%B6%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.2.3.2.</span> <span class="toc-text">计数器定时查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8B%AC%E7%AB%8B%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.3.3.</span> <span class="toc-text">独立请求方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E9%80%9A%E4%BF%A1%E6%8E%A7%E5%88%B6"><span class="toc-number">2.3.</span> <span class="toc-text">总线通信控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E9%80%9A%E4%BF%A1%E6%8E%A7%E5%88%B6-1"><span class="toc-number">2.4.</span> <span class="toc-text">总线通信控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E9%80%9A%E4%BF%A1%E7%9A%84%E5%9B%9B%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">2.4.1.</span> <span class="toc-text">总线通信的四种方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1"><span class="toc-number">2.4.1.1.</span> <span class="toc-text">同步通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E9%80%9A%E4%BF%A1"><span class="toc-number">2.4.1.2.</span> <span class="toc-text">异步通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%8A%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1"><span class="toc-number">2.4.1.3.</span> <span class="toc-text">半同步通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E7%A6%BB%E5%BC%8F%E9%80%9A%E4%BF%A1"><span class="toc-number">2.4.1.4.</span> <span class="toc-text">分离式通信</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84"><span class="toc-number">3.</span> <span class="toc-text">总线结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84"><span class="toc-number">3.1.</span> <span class="toc-text">单总线结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84"><span class="toc-number">3.2.</span> <span class="toc-text">多总线结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84"><span class="toc-number">3.2.1.</span> <span class="toc-text">双总线结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84"><span class="toc-number">3.2.2.</span> <span class="toc-text">三总线结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84"><span class="toc-number">3.2.3.</span> <span class="toc-text">四总线结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84%E5%AF%B9%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">3.3.</span> <span class="toc-text">总线结构对系统性能的影响</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E7%9A%84%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="toc-number">4.</span> <span class="toc-text">总线的性能指标</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E5%AE%BD"><span class="toc-number">4.1.</span> <span class="toc-text">位宽</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%97%B6%E9%92%9F%E9%A2%91%E7%8E%87"><span class="toc-number">4.2.</span> <span class="toc-text">工作时钟频率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E4%BC%A0%E8%BE%93%E7%8E%87%EF%BC%88%E6%80%BB%E7%BA%BF%E5%B8%A6%E5%AE%BD%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">标准传输率（总线带宽）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E8%83%BD%E5%8A%9B"><span class="toc-number">4.4.</span> <span class="toc-text">负载能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E5%A4%8D%E7%94%A8"><span class="toc-number">4.5.</span> <span class="toc-text">总线复用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E5%AE%9A%E6%97%B6%E5%8D%8F%E8%AE%AE%EF%BC%88%E6%8F%A1%E6%89%8B%E6%9C%BA%E5%88%B6%EF%BC%89"><span class="toc-number">4.6.</span> <span class="toc-text">总线定时协议（握手机制）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E6%80%BB%E7%BA%BF%E7%9A%84%E6%80%A7%E8%83%BD"><span class="toc-number">4.7.</span> <span class="toc-text">几种常见总线的性能</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%80%BB%E7%BA%BF%E6%A0%87%E5%87%86"><span class="toc-number">5.</span> <span class="toc-text">常用总线标准</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%80%BB%E7%BA%BF"><span class="toc-number">5.1.</span> <span class="toc-text">系统总线</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#S-100%E6%80%BB%E7%BA%BF"><span class="toc-number">5.1.1.</span> <span class="toc-text">S-100总线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IBM-PC%E6%80%BB%E7%BA%BF%E5%92%8CISA%E6%80%BB%E7%BA%BF"><span class="toc-number">5.1.2.</span> <span class="toc-text">IBM PC总线和ISA总线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PC-104%E6%80%BB%E7%BA%BF"><span class="toc-number">5.1.3.</span> <span class="toc-text">PC-104总线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Multibus-%E2%85%A0%E5%92%8C%E2%85%A1"><span class="toc-number">5.1.4.</span> <span class="toc-text">Multibus Ⅰ和Ⅱ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VME%E6%80%BB%E7%BA%BF"><span class="toc-number">5.1.5.</span> <span class="toc-text">VME总线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E9%80%9A%E9%81%93MCA"><span class="toc-number">5.1.6.</span> <span class="toc-text">微通道MCA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EISA%E6%80%BB%E7%BA%BF-Extend-industry-Standard-Architecture"><span class="toc-number">5.1.7.</span> <span class="toc-text">EISA总线(Extend  industry Standard  Architecture)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%87%E7%94%A8%E6%80%BB%E7%BA%BF%E5%A4%8D%E7%94%A8%E6%8A%80%E6%9C%AF%E7%9A%84Q%E6%80%BB%E7%BA%BF%E5%92%8CNUBUS"><span class="toc-number">5.1.8.</span> <span class="toc-text">采用总线复用技术的Q总线和NUBUS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#STD%E6%80%BB%E7%BA%BF"><span class="toc-number">5.1.9.</span> <span class="toc-text">STD总线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E6%80%BB%E7%BA%BF"><span class="toc-number">5.2.</span> <span class="toc-text">局部总线</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VL-BUS"><span class="toc-number">5.2.1.</span> <span class="toc-text">VL-BUS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PCI%E6%80%BB%E7%BA%BF"><span class="toc-number">5.2.2.</span> <span class="toc-text">PCI总线*</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E6%80%BB%E7%BA%BF"><span class="toc-number">5.3.</span> <span class="toc-text">设备总线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RS-232C"><span class="toc-number">5.4.</span> <span class="toc-text">RS-232C</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SCSI%E6%80%BB%E7%BA%BF-small-computer-system-interface"><span class="toc-number">5.4.1.</span> <span class="toc-text">SCSI总线(small computer system interface)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ATA%EF%BC%88AT-Attachment%EF%BC%89"><span class="toc-number">5.4.2.</span> <span class="toc-text">ATA（AT Attachment）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IEEE488"><span class="toc-number">5.4.3.</span> <span class="toc-text">IEEE488</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Centronics"><span class="toc-number">5.4.4.</span> <span class="toc-text">Centronics</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#USB-UNIVERSAL-SERIAL-BUS"><span class="toc-number">5.4.5.</span> <span class="toc-text">USB(UNIVERSAL SERIAL BUS )  *</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IEEE1394"><span class="toc-number">5.4.6.</span> <span class="toc-text">IEEE1394</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CAN%E6%80%BB%E7%BA%BF"><span class="toc-number">5.4.7.</span> <span class="toc-text">CAN总线</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/14/" title="【计算机组成原理】系统总线">【计算机组成原理】系统总线</a><time datetime="2024-03-14T06:47:48.000Z" title="发表于 2024-03-14 14:47:48">2024-03-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/12/" title="【计算机组成原理】概论">【计算机组成原理】概论</a><time datetime="2024-03-12T03:41:58.000Z" title="发表于 2024-03-12 11:41:58">2024-03-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/07/" title="更新杂谈1">更新杂谈1</a><time datetime="2024-03-07T08:53:55.000Z" title="发表于 2024-03-07 16:53:55">2024-03-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/06/" title="unraid直通显卡">unraid直通显卡</a><time datetime="2024-03-06T15:01:49.000Z" title="发表于 2024-03-06 23:01:49">2024-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/13/" title="BadUSB制作尝试">BadUSB制作尝试</a><time datetime="2024-01-12T16:28:22.000Z" title="发表于 2024-01-13 00:28:22">2024-01-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'i90QJFuyhHAVYRBQ9QRMjmhD-gzGzoHsz',
+      appKey: 'b6UJRPJk1JYOZVTNqtZcc2AP',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: true
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: 'c1b311a4bb95d53dbbcb',
+      clientSecret: 'a411c4d9d232192aba53ad0c8fbff025a3616033',
+      repo: 'cyan4comment',
+      owner: 'cyan4run',
+      admin: ['cyan4run'],
+      id: '59c1a8a6a11ee789dbb1d5baf4c655be',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Valine' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
