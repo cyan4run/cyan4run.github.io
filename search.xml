@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>关于unraid的新进展</title>
+      <link href="/2024/03/23/"/>
+      <url>/2024/03/23/</url>
+      
+        <content type="html"><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>之前用windows10很好安装，遂凑合</p><p>但是前几天突然很卡，且重建两个系统都很慢，猜测是虚拟磁盘的速度到头了</p><p>最终决定把两条nvme的ssd直通给虚拟机，一个用作系统盘</p><h1 id="最新进展"><a href="#最新进展" class="headerlink" title="最新进展"></a>最新进展</h1><p>安装了win11 得用TPM的bios不然安装不了</p><p>磁盘驱动器一开始安装不了，后来改了下分区格式gpt就好了</p><p>很顺利，还没改uefi启动顺序导致一开机进入uefi</p><p>在考虑要不要改</p><p>原因是改了可能就进不去了，毕竟虚拟机启动时未必键盘能连上（猜测了）</p><p>不改启动不够迅速（doge）</p><p>之后看，<strong>也可以写个文章分享下怎么装</strong></p><h1 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题"></a>性能问题</h1><p>cpu是直通的显卡是直通的磁盘是直通的</p><p>内存没通道，估计就是单通道？之后问问内存的问题</p><p>性能比之前的虚拟机快多了，爽，win11性能也有优化，总之非常值得直通</p><h1 id="代价"><a href="#代价" class="headerlink" title="代价"></a>代价</h1><p>由于直通少了一个硬盘</p><p>可能nas那块的存储少了，买了个2t ssd固态sata口的准备和机械盘放一起，又要拆机箱.jpg</p><p>作者-129元</p><p>今天还买了个显示器挂灯，改善一下工作环境-179元</p><p>笑死，希望最近两个刚起步的事儿能一步步做下去</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>bad</title>
       <link href="/2024/03/21/"/>
       <url>/2024/03/21/</url>
