@@ -59,7 +59,7 @@
       <link href="/2024/03/21/"/>
       <url>/2024/03/21/</url>
       
-        <content type="html"><![CDATA[<p>啥也没干把虚拟机整爆了，尝试恢复img镜像文件<br>博客文件有的没了，迅速迁移了<br>QAQ</p>]]></content>
+        <content type="html"><![CDATA[<p>啥也没干把虚拟机整爆了，尝试恢复img镜像文件<br>博客文件有的没了，迅速迁移了<br>QAQ</p><h1 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h1><p>原因是wsl和hyperv在虚拟机中启动了，嵌套的虚拟机导致文件资源管理器异常卡顿<br>处理一次卡顿电脑后发现，电脑卡顿大概率是开了虚拟化，docker和安装子系统都可能导致</p>]]></content>
       
       
       
