@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>streamlit动态刷新</title>
+      <link href="/2024/04/27/"/>
+      <url>/2024/04/27/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Streamlit库的动态刷新效果"><a href="#Streamlit库的动态刷新效果" class="headerlink" title="Streamlit库的动态刷新效果"></a>Streamlit库的动态刷新效果</h1><p>最近做项目用streamlit做demo，感觉研究出了新用法</p><p>大多数的st项目都是静态的，即使有组件可以给你搭建监控栏。</p><p>研究出来了一个可以动态刷新后台数据的方法</p><blockquote><p>其实不能和真的刷新效果媲美，但是可以当做下位替代</p><p>并且应该也有人想到了，只是社区内容真心不多</p></blockquote><p>下代码是一个最小用例</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> streamlit <span class="keyword">as</span> st</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">if</span> <span class="string">&#x27;count&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> st.session_state:<span class="comment">#初始化一个计数器</span></span><br><span class="line">  st.session_state.count=<span class="number">0</span></span><br><span class="line">temp=st.session_state.count</span><br><span class="line">st.session_state.count+=random.random()%<span class="number">1</span> <span class="comment">#随机+0-1</span></span><br><span class="line">st.metric(label=<span class="string">&quot;计数&quot;</span>, value=st.session_state.count,delta=<span class="built_in">round</span>(st.session_state.count-temp,<span class="number">2</span>))</span><br><span class="line"><span class="keyword">if</span> st.session_state.count&gt;=<span class="number">10</span>:</span><br><span class="line">  st.error(<span class="string">&#x27;计数达到10，程序结束&#x27;</span>)</span><br><span class="line">  st.stop()</span><br><span class="line">time.sleep(<span class="number">1</span>) <span class="comment">#每秒刷新一次</span></span><br><span class="line"></span><br><span class="line">st.rerun()</span><br></pre></td></tr></table></figure><p>这个方法有个问题，比如你在页面上显示的东西从后端数据库中消失了（因为你的操作）</p><p>那么会留下容器残留(你可能看见的形式就是容器变灰了)</p><p>有个解决办法：</p><p>新建一个空白页blank.py</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> streamlit <span class="keyword">as</span> st</span><br><span class="line"><span class="comment">#这是什么页面？</span></span><br><span class="line"><span class="comment">#天才的想法，由于st有缓存，删除的评论会留下一个容器未被装填，而重新加载一下这个页面没作用</span></span><br><span class="line"><span class="comment">#把这个页面作为跳转页面，根本看不出来是两个页面hhh</span></span><br><span class="line">st.switch_page(<span class="string">f&quot;./pages/<span class="subst">&#123;st.session_state.previouspage&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure><p>比如你上一个页面是example.py</p><p>则在跳转前利用st.session_state.previouspage记录下当前页面example.py</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">st.session_state.previouspage=<span class="string">&#x27;example.py&#x27;</span></span><br><span class="line">st.switch_page(<span class="string">&#x27;./pages/blank.py&#x27;</span>)</span><br></pre></td></tr></table></figure><p>看到的效果是：</p><ol><li>页面操作后容器灰了一下</li><li>跳转到了一个白页面</li><li>马上又显示了原本的页面，且没有原本的容器残留</li></ol><blockquote><p>跳转速度是很快的</p></blockquote><h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>现在在研究直接插入的html元素能否与后端交互。</p><p>目前的查询表示是不行的，即使有按钮，该按钮也不能和python的后端</p><p>st_tweaker这个库可以算是解决了这一痛点，可以写css了</p><p>后续看看能不能js交互</p><p>或者发现一个组件竟然能够<strong>监控点击状态</strong></p><p>有研究的也可以给我发发邮件<strong>QAQ</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Streamlit </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>杂谈2</title>
       <link href="/2024/04/22/"/>
       <url>/2024/04/22/</url>
