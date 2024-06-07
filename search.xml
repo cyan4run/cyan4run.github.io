@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>reqable配合iphone抓包</title>
+      <link href="/2024/06/07/"/>
+      <url>/2024/06/07/</url>
+      
+        <content type="html"><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>学习计网的wireshark，对抓包工具有了点了解，然后试试更现代化的<strong>reqable</strong>工具，这个工具更适合批量分析、测试网站、小程序。</p><p>实验环境：</p><ul><li><p>MacOS系统 arm架构 </p></li><li><p>iphone13 Pro iOS 17.5.1</p></li><li>mac端的reqable和iOS端的reqable</li><li>一个数据线，用于连接iphone和mac</li></ul><h1 id="网络连接"><a href="#网络连接" class="headerlink" title="网络连接"></a>网络连接</h1><p>reqable的手机抓包可以依赖于同一局域网下的http代理，在reqable的帮助里面已经清楚的解释了</p><p>但是不足的是，在同一互联网下面我的iphone端reqable有时候无法连接到我的mac，（确认是同一网段），同时即使连上了也未必稳定。</p><blockquote><p>校园网环境是这样的</p></blockquote><p>于是我发现了mac的<strong>网络共享功能</strong></p><blockquote><p>该功能可以把mac端的wifi直接共享出来，给手机使用</p></blockquote><p>这里我把手机连上mac后，<strong>信任该电脑</strong></p><p>然后在macos系统设置下如下设置</p><p><img src="https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202406071948479.png" alt="image-20240607194839425"></p><blockquote><p>两个USB的原因是有两个typec口都连过，都用上好了</p></blockquote><p>有时候会报错：你的互联网连接不能共享，因为它受802.1X保护。</p><p>一般不会报这个问题，我这边学校有俩wifi，换了另一个就行</p><p>确认开启以后把iphone的wifi 蜂窝网络都关掉 蓝牙也能关了</p><p><img src="https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202406071950992.PNG" alt="IMG_3632" style="zoom:25%;"></p><p>现在手机没有wifi 蜂窝 但是可以成功访问正常的网站</p><p><img src="https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202406071952964.jpeg" alt="IMG_92360AA2516B-1" style="zoom:25%;"></p><blockquote><p>有意思的是隔空投送也会显示有线连接 即使我开着蓝牙</p></blockquote><p>到现在，手机网络就全走的mac了</p><h1 id="连接reqable"><a href="#连接reqable" class="headerlink" title="连接reqable"></a>连接reqable</h1><blockquote><p>其实这一步就水到渠成了</p><p>因为两者已经在同一网段下，协同模式自然可以连接上</p><p>（物理连接才是最稳定的）</p></blockquote><p>前提先装好了两端的SSL证书</p><p>电脑端点击reqable左上角的手机协同 iphone用reqable去扫码</p><p>直接连接成功</p><p>注意开启抓包要在手机上启动reqable</p><p>然后随便访问一个手机网站 mac端有对应的流量</p><p><img src="https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202406071958446.png" alt="image-20240607195821413"></p><blockquote><p>这看着清楚多啦</p><p>reqable适合测试api、小程序等</p><p>值得部署</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> Web </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>控制单元的设计</title>
       <link href="/2024/06/02/"/>
       <url>/2024/06/02/</url>
