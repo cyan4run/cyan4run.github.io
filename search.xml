@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>域名调整</title>
+      <link href="/2024/10/12/"/>
+      <url>/2024/10/12/</url>
+      
+        <content type="html"><![CDATA[<h1 id="新域名https-nocc-fun"><a href="#新域名https-nocc-fun" class="headerlink" title="新域名https://nocc.fun"></a>新域名<a href="https://nocc.fun">https://nocc.fun</a></h1><p>本来的域名已经做了302重定向到这里，还剩一个月解析，新域名看着舒服点</p><p>后面会有更新最近的笔记</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Notice </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>计算机网络运输层</title>
+      <link href="/2024/06/20/"/>
+      <url>/2024/06/20/</url>
+      
+        <content type="html"><![CDATA[<h1 id="运输层服务"><a href="#运输层服务" class="headerlink" title="运输层服务"></a>运输层服务</h1><p>运输层协议为在不同主机上的应用进程之间提供了逻辑通信功能</p><p><strong>网络层提供了主机之间的逻辑通信，而运输层为运行在不同主机上的进程之间提供了逻辑通信</strong></p><p>因特网运输层为应用层提供了UDP和TCP协议</p><p>网络层有个协议是IP协议，即网际协议</p><p>UDP和TCP最基本的责任是：将两个端系统间IP的交付服务拓展为运行在端系统上的两个进程之间的交付服务。</p><p>将主机间交付拓展到进程间交付被称为运输层的多路复用和多路分解</p><h2 id="多路复用与多路分解"><a href="#多路复用与多路分解" class="headerlink" title="多路复用与多路分解"></a>多路复用与多路分解</h2><p>将运输层报文端中的数据交付到正确的套接字工作称为<strong>多路分解</strong></p><p>在源主机从不同套接字中收集数据库，并为每个数据块封装上首部信息从而生成报文段，然后将报文段传递到网络层，所有这些工作称为<strong>多路复用</strong></p><h2 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h2><p>UDP仅仅做了运输协议的最少工作，除了复用/分解功能及少量差错检测外，几乎就没有对IP增加新的东西</p><p>使用UDP时，在发送报文段之前，没有握手，所以称UDP无连接</p><p>DNS是一个使用UDP的应用层协议的例子</p><p>使用UDP的原因：</p><ul><li>关于发送什么数据及何时发生的应用层控制更加精细</li><li>无需建立连接</li><li>无连接状态</li><li>分组首部开销小</li></ul><p><strong>UDP报文结构</strong></p><p><img src="https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202406201619108.jpeg" alt="UDP报文结构"></p><p>UDP校验和提供了差错校验过程</p><p>发送方的UDP对报文段中的16比特字的和进行反码运算，求和时若溢出则回卷（取反）。结果放在校验和字段</p><p>检错：接收方将全部的16比特字加在一起，如果没错，和将是<code>1111 1111 1111 1111</code>，如果有零说明错了</p><h2 id="可靠数据传输"><a href="#可靠数据传输" class="headerlink" title="可靠数据传输"></a>可靠数据传输</h2><p>靠理解 看书吧</p><h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><p>TCP是面向连接的，在一个进程向另一个进程发送数据之前，这两个进程必须先互相握手</p><p>TCP连接总是<strong>点对点</strong>的</p><p>三次握手机制：</p><ul><li>客户先发送一个特殊的TCP报文段</li><li>服务器用一个特殊的TCP报文段响应</li><li>客户用第三个特殊的报文段作为响应</li></ul><p>前两个报文不承载有效荷载，也就是不包含应用层数据，第三个报文可以承载有效荷载</p><p>一旦连接建立，可以互相发数据</p><p><strong>报文结构</strong></p><p><img src="https://cdn.jsdelivr.net/gh/cyan4run/cdn_img/img/202406201952288.jpeg" alt="IMG_BF169C3436CF-1"></p><p>TCP首部一般是20字节</p><p>包含：</p><ul><li>32bit序号字节和32bit确认号字节</li><li>16bit的接收窗口字节</li><li>4bit首部长度字段</li><li>可选、可变的选项字段</li><li>6bit的标志字段</li></ul><p><strong>往返时间的估计和超时</strong></p><p>估计往返时间</p><p>报文段的样本RTT（SampleRTT）就是从某报文段被发出到该报文段被确认的时间量</p><p>大多数TCP实现仅在某个时刻做一次SampleRTT测量</p><p>SampleRTT的均值称为EstimatedRTT</p><p>$\text{EstimatedRTT}=(1-\alpha)\cdot+\alpha \cdot \text{SampleRTT}$</p><p>DevRTT用于估算SampleRTT会偏离EstimatedRTT的程度</p><p>$\text{DevRTT}=(1-ß)\cdot \text{DevRTT}+ß \cdot \left|{ {\text{SampleRTT}- \text{EstimatedRTT}}}\right|$</p><p>TCP的超时间间隔用TimeoutInterval表示</p><p>$\text{TimeoutInterval} = \text{EstimatedRTT}+4 \cdot \text{DevRTT}$</p><p><strong>流量控制</strong></p><p>TCP为他的应用程序提供了流量控制服务以消除发送方使接收方缓存溢出的可能性</p><p>通过让发送方维护一个称为接收窗口的变量来提供流量控制</p><p>假设A向B建立一条TCP连接发送一个大文件，B为连接分配一个接收缓存，用RcvBuffer表示</p><p>定义以下变量</p><ul><li>LastByteRead：主机B上的应用进程从缓存独处数据流的最后一个字节的编号</li><li>LastByteRcvd：从网络中到达的并且已经放入主机B接收缓存中的数据流的最后一个字节的编号</li></ul><p>由于TCP不允许已分配的缓存溢出，则有 $\text{LastByteRcvd} - \text{LastByteRead}\leq \text{RcvBuffer}$</p><p>接收窗口用rwnd表示，根据缓存可用空间的数量来设置：$\text{rwnd}=\text{RcvBuffer} - [\text{LastByteRcvd} - \text{LastByteRead}]$</p><p><strong>关闭连接</strong></p><p>当要关闭连接时，TCP客户端向服务器进程发送一个特殊的TCP报文段，这个报文段的首部标志位即FIN比特被设置为1，然后服务器也发回一个报文，FIN比特被置为1，最后客户确认这个服务器连接都终止了</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 计算机网络 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>计算机网络应用层</title>
       <link href="/2024/06/19/"/>
       <url>/2024/06/19/</url>
